@@ -24,13 +24,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18.x'
-
-      - name: Install yarn
-        uses: yarn/action-setup@v2
-        id: yarn-install
-        with:
-          version: 8
-          run_install: false
+          cache: 'yarn'
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
