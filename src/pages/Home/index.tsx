@@ -3,6 +3,7 @@ import { useRecipe } from '../../hooks/react-query/useRecipe';
 export default function Home() {
   const { useGetAllRecipeList, useGetOnlyRecipeList, useGetOnlyIngredient } =
     useRecipe();
+
   // 상세페이지용 전체 출력
   const { data: allRecipe, isLoading } = useGetAllRecipeList();
 
@@ -11,7 +12,12 @@ export default function Home() {
 
   // recipe테이블의 ingredient_id 넣어주면 준비재료 출력
   const { data: onlyIngredient } = useGetOnlyIngredient(1);
-
+  if (!allRecipe) {
+    return <h1>에러났어요! 다온을 찾아오세요!</h1>;
+  }
+  if (isLoading) {
+    return <h1>Loading...</h1>;
+  }
   console.log('only recipe');
   console.log(onlyRecipe);
 
@@ -32,12 +38,7 @@ export default function Home() {
 
   console.log('step');
   console.log(allRecipe?.[0].step.list);
-  if (!allRecipe) {
-    return null;
-  }
-  if (isLoading) {
-    return <h1>Loading...</h1>;
-  }
+
   return (
     <ul>
       {allRecipe?.map((item) => {
