@@ -1,100 +1,148 @@
-import { useEffect, useState } from 'react';
-import { styled } from 'styled-components';
+import { useState } from 'react';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 type Props = {
-  images: string[];
+  data: {
+    text: string;
+    image: string;
+    level: string;
+    time: string;
+  }[];
 };
 
-const Carousel = ({ images }: Props) => {
+const Carousel = ({ data }: Props) => {
   const [activeIndex, setActiveIndex] = useState(0);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [images]);
-
-  const HandleNextIndex = () => {
-    setActiveIndex((prevIndex) => (prevIndex + 1) % images.length);
-  };
-
-  const HandlePrevIndex = () => {
-    setActiveIndex((prevIndex) => (prevIndex - 1) % images.length);
+  const settings = {
+    arrows: false,
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    afterChange: setActiveIndex,
   };
 
   return (
     <>
-      <Styled.Wrapper>
-        <Styled.PrevBtn onClick={HandlePrevIndex}>이전</Styled.PrevBtn>
-        {images.map((image, index) => (
-          <Styled.Image
-            key={image}
-            src={image}
-            className={index === activeIndex ? 'active' : ''}
-          />
-        ))}
-        <Styled.NextBtn onClick={HandleNextIndex}>다음</Styled.NextBtn>
-      </Styled.Wrapper>
-      <Styled.Indicators>
-        {images.map((_, index) => (
-          <Styled.Dot
-            key={index}
-            className={index === activeIndex ? 'active' : ''}
-          />
-        ))}
-      </Styled.Indicators>
+      <Wrapper>
+        <TextBox>
+          <CurationText>{data[activeIndex].text}</CurationText>
+          <Link to={`/detail/${data[activeIndex].text}`}>
+            <img src="/public/next.svg" />
+          </Link>
+        </TextBox>
+        <Slider {...settings}>
+          {data.map((item, index) => (
+            <ImageContainer key={index}>
+              <Image src={item.image} />
+              <CaptionBox>
+                <p>
+                  난이도 {item.level}
+                  <Divider>|</Divider>
+                  <span>
+                    <img src="/public/clock.svg" />
+                  </span>
+                  {item.time}
+                </p>
+              </CaptionBox>
+            </ImageContainer>
+          ))}
+        </Slider>
+      </Wrapper>
     </>
   );
 };
 
 export default Carousel;
 
-const Styled = {
-  Wrapper: styled.div`
-    position: relative;
-    width: 100%;
-    height: 300px;
-  `,
+const Wrapper = styled.div`
+  position: relative;
+  width: 100%;
+  height: 400px;
 
-  Image: styled.img`
-    display: none;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    &.active {
-      display: block;
-    }
-  `,
-
-  PrevBtn: styled.button`
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-  `,
-
-  NextBtn: styled.button`
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-  `,
-
-  Indicators: styled.div`
-    width: 100%;
-    display: flex;
-    justify-content: center;
-  `,
-
-  Dot: styled.span`
-    width: 10px;
-    height: 10px;
-    background: lightgray;
+  .slick-slider .slick-dots li {
+    width: 6px;
+    height: 6px;
+    background: #d9d9d9;
     margin: 0 5px;
     border-radius: 50%;
-    &.active {
-      background: black;
+    cursor: auto;
+    button {
+      display: none;
     }
-  `,
-};
+  }
+
+  .slick-slider .slick-dots li.slick-active {
+    background: #ed7732;
+    width: 19px;
+    border-radius: 5px;
+    cursor: auto;
+    button {
+      display: none;
+    }
+  }
+`;
+
+const TextBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 20px;
+`;
+
+const CurationText = styled.p`
+  font-size: 20px;
+  margin-right: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+const ImageContainer = styled.div`
+  height: 160px;
+  position: relative;
+`;
+
+const Image = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+`;
+
+const CaptionBox = styled.div`
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  bottom: 10px;
+  right: 10px;
+  width: 114px;
+  height: 28px;
+  background-color: black;
+  border-radius: 8px;
+  opacity: 60%;
+  padding: 5px;
+
+  p {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: white;
+    font-size: 12px;
+
+    img {
+      display: inline;
+      margin-right: 5px;
+    }
+  }
+`;
+
+const Divider = styled.span`
+  margin: 0 5px;
+`;
