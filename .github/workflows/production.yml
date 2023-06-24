@@ -62,3 +62,20 @@ jobs:
 
       - name: Invalidate CloudFront Cache
         run: aws cloudfront create-invalidation --distribution-id ${{env.AWS_DISTRIBUTION_ID}} --paths "/*"
+
+      - name: Get CloudFront Distribution URL
+        id: cloudfront-url
+        run: echo "::set-output name=url::$(aws cloudfront list-distributions --query 'DistributionList.Items[0].DomainName' --output text)"
+
+      - name: Comment on Pull Request
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const body = `✅배포 성공!\n\n링크 👉 https://${process.env.AWS_S3_BUCKET}.s3.amazonaws.com/index.html\n\nCloudFront Distribution: https://${steps.cloudfront-url.outputs.url}`;
+
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
