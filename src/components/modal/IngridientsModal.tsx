@@ -1,5 +1,6 @@
 import { styled } from 'styled-components';
 import IngridientsItem from './IngridientsItem';
+import DescisionButton from '../Button/DescisionButton';
 
 const IngridientsModal = () => {
   return (
@@ -15,10 +16,28 @@ const IngridientsModal = () => {
           <IngridientsItem text="족발" />
           <IngridientsItem text="배고프다" />
           <IngridientsItem text="후우" />
+          <IngridientsItem text="감자" />
+          <IngridientsItem text="떡볶이용 떡" />
+          <IngridientsItem text="고추장" />
+          <IngridientsItem text="족발" />
+          <IngridientsItem text="배고프다" />
+          <IngridientsItem text="후우" />
+          <IngridientsItem text="감자" />
+          <IngridientsItem text="떡볶이용 떡" />
+          <IngridientsItem text="고추장" />
+          <IngridientsItem text="족발" />
+          <IngridientsItem text="배고프다" />
+          <IngridientsItem text="후우" />
+          <IngridientsItem text="감자" />
+          <IngridientsItem text="떡볶이용 떡" />
+          <IngridientsItem text="고추장" />
+          <IngridientsItem text="족발" />
+          <IngridientsItem text="배고프다" />
+          <IngridientsItem text="후우" />
         </ContentWrapper>
         <FooterWrapper>
-          <button>버튼 1</button>
-          <button>버튼 2</button>
+          <DescisionButton buttonType="back" innerText="돌아가기" />
+          <DescisionButton buttonType="confirm" innerText="확인했어요!" />
         </FooterWrapper>
       </Wrapper>
       <OutsideWrapper />
@@ -38,8 +57,7 @@ const Wrapper = styled.div`
 
   display: flex;
   flex-direction: column;
-  min-height: 300px;
-  height: auto;
+  height: 385px;
 
   padding: 20px;
   gap: 16px;
@@ -61,6 +79,7 @@ const HeaderMainText = styled.span`
 
 const ContentWrapper = styled.div`
   display: flex;
+  overflow-y: auto;
   flex: 1;
   flex-direction: column;
   gap: 4px;
@@ -72,4 +91,7 @@ const OutsideWrapper = styled.div`
   background-color: #21252950;
 `;
 
-const FooterWrapper = styled.div``;
+const FooterWrapper = styled.div`
+  display: flex;
+  gap: 10px;
+`;
