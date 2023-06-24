@@ -1,3 +1,5 @@
+import { Ingredient, Step } from './types';
+
 export type Json =
   | string
   | number
@@ -12,24 +14,56 @@ export interface Database {
       recipe_list: {
         Row: {
           id: number;
-          title: string | null;
+          recipe_name: string | null;
+          channel_name: string | null;
+          youtube_video_id: string | null;
+          youtube_video_thumbnail: string | null;
+          cooking_time: number | null;
+          description: number | null;
+          curation: string | null;
+          category: string | null;
+          ingredient_id: number | null;
+          step_id: number | null;
+          created_at: string;
+          ingredient: Ingredient;
+          step: Step;
+        };
+        Insert: {
+          recipe_name: string | null;
+          channel_name: string | null;
+          youtube_video_id: string | null;
+          youtube_video_thumbnail: string | null;
+          cooking_time: number | null;
+          description: number | null;
+          curation: string | null;
+          category: string | null;
+          ingredient_id?: number | null;
+          step_id?: number | null;
+        };
+        Update: {
+          recipe_name: string | null;
+          channel_name: string | null;
+          youtube_video_id: string | null;
+          youtube_video_thumbnail: string | null;
+          cooking_time: number | null;
+          description: number | null;
+          curation: string | null;
+          category: string | null;
+          ingredient_id?: number | null;
+          step_id?: number | null;
+        };
+      };
+      ingredient: {
+        Row: {
+          id: number;
+          list: Json | null;
           created_at: string;
         };
         Insert: {
-          author?: string | null;
-          data?: Json | null;
-          id?: number;
-          inserted_at?: string;
-          name?: string | null;
-          updated_at?: string;
+          list: Json | null;
         };
         Update: {
-          author?: string | null;
-          data?: Json | null;
-          id?: number;
-          inserted_at?: string;
-          name?: string | null;
-          updated_at?: string;
+          list?: Json | null;
         };
       };
     };
