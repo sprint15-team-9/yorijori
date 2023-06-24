@@ -1,6 +1,17 @@
 import 'styled-components';
 
 declare module 'styled-components' {
+  export interface ThemedStyledComponentsModule<T> {
+    createGlobalStyle(
+      strings: TemplateStringsArray,
+      ...interpolations: SimpleInterpolation[]
+    ): React.ComponentClass;
+  }
+
+  export function createGlobalStyle(
+    strings: TemplateStringsArray,
+    ...interpolations: SimpleInterpolation[]
+  ): React.ComponentClass;
   export interface DefaultTheme {
     color: {
       primary_1: string;
