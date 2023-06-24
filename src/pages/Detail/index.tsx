@@ -1,5 +1,5 @@
 const Detail = () => {
-  return <div>Detail!</div>;
+  return <div>IM HOME</div>;
 };
 
 export default Detail;
