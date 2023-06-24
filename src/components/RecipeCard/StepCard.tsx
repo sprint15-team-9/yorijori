@@ -3,43 +3,50 @@ import { Step } from './recipe';
 import { CaretRightIcon } from '../../assets/icons/CaretRight';
 import { TimerIcon } from '../../assets/icons/TimerIcon';
 
-export const StepCard = ({ stepData }: { stepData: Step }) => {
-  return (
-    <CardContainer>
-      <div className="progress"></div>
-      <div className="content">
-        <div className="orderbox">
-          <div>{stepData.step_order}</div>
-          <h2>{stepData.time_stamp}</h2>
-        </div>
-        <p className="description">{stepData.step_description}</p>
-        {stepData.tip && (
-          <div className="tipbox">
-            <span role="img" aria-label="indexfinger">
-              ☝️
-            </span>
-            <p>{stepData.tip}</p>
-          </div>
-        )}
+type StepProps = {
+  stepData: Step;
+  openModal: () => void;
+};
 
-        <div>
-          <div className="btn-box">
+export const StepCard = ({ stepData, openModal }: StepProps) => {
+  const handleClickModal = () => openModal();
+  return (
+    <div>
+      <CardContainer>
+        <div className="progress"></div>
+        <div className="content">
+          <div className="orderbox">
+            <div>{stepData.step_order}</div>
+            <h2>{stepData.time_stamp}</h2>
+          </div>
+          <p className="description">{stepData.step_description}</p>
+          {stepData.tip && (
+            <div className="tipbox">
+              <span role="img" aria-label="indexfinger">
+                ☝️
+              </span>
+              <p>{stepData.tip}</p>
+            </div>
+          )}
+
+          <div>
             {stepData.tip2 && (
-              <Button1>
+              <Button1 onClick={handleClickModal}>
                 {stepData.tip2}
                 <CaretRightIcon />
               </Button1>
             )}
+
+            {stepData.timer && (
+              <Button2 onClick={handleClickModal}>
+                <TimerIcon />
+                타이머 재기
+              </Button2>
+            )}
           </div>
-          {stepData.timer && (
-            <Button2>
-              <TimerIcon />
-              타이머 재기
-            </Button2>
-          )}
         </div>
-      </div>
-    </CardContainer>
+      </CardContainer>
+    </div>
   );
 };
 
@@ -113,7 +120,7 @@ const CardContainer = styled.li`
       top: 5%;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 2;
+      z-index: 1;
       width: 5px;
       height: 5px;
       border-radius: 50%;
