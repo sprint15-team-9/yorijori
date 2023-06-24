@@ -1,10 +1,24 @@
 import { ThemeProvider, styled } from 'styled-components';
 import Router from './routes/Router';
+import { useState } from 'react';
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import theme from './style/theme';
 import GlobalStyle from './style/GlobalStyle';
-
-const App = () => {
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+function App() {
+  const [client] = useState(
+    new QueryClient({
+      defaultOptions: {
+        queries: {
+          retry: 0,
+          staleTime: 1000 * 100,
+          cacheTime: 1000 * 100,
+        },
+      },
+    })
+  );
   return (
+    <QueryClientProvider client={client}>
     <ThemeProvider theme={theme}>
       <GlobalStyle />
       <Wrapper>
@@ -12,7 +26,9 @@ const App = () => {
           <Router />
         </Container>
       </Wrapper>
+      <ReactQueryDevtools initialIsOpen={false} />
     </ThemeProvider>
+    </QueryClientProvider>
   );
 };
 
