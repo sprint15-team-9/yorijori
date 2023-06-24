@@ -1,15 +1,18 @@
-import { styled } from 'styled-components';
+import { ThemeProvider, styled } from 'styled-components';
 import Router from './routes/Router';
+import theme from './style/theme';
 
-function App() {
+const App = () => {
   return (
-    <Wrapper>
-      <Container>
-        <Router />
-      </Container>
-    </Wrapper>
+    <ThemeProvider theme={theme}>
+      <Wrapper>
+        <Container>
+          <Router />
+        </Container>
+      </Wrapper>
+    </ThemeProvider>
   );
-}
+};
 
 export default App;
 
