@@ -19,18 +19,18 @@ function App() {
   );
   return (
     <QueryClientProvider client={client}>
-    <ThemeProvider theme={theme}>
-      <GlobalStyle />
-      <Wrapper>
-        <Container>
-          <Router />
-        </Container>
-      </Wrapper>
-      <ReactQueryDevtools initialIsOpen={false} />
-    </ThemeProvider>
+      <ThemeProvider theme={theme}>
+        <GlobalStyle />
+        <Wrapper>
+          <Container>
+            <Router />
+          </Container>
+        </Wrapper>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </ThemeProvider>
     </QueryClientProvider>
   );
-};
+}
 
 export default App;
 
