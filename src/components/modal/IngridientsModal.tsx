@@ -1,6 +1,9 @@
 import { styled } from 'styled-components';
 import IngridientsItem from './IngridientsItem';
 import DescisionButton from '../Button/DescisionButton';
+import Tooltip from '../Tooltip';
+import Badge from '../Badge';
+import mensuration from '../../assets/img/mensuration.png';
 
 const IngridientsModal = () => {
   return (
@@ -8,6 +11,9 @@ const IngridientsModal = () => {
       <Wrapper>
         <Header>
           <HeaderMainText>요리 재료 체크하기!</HeaderMainText>
+          <Tooltip tooltipComponent={<TooltipContentImg src={mensuration} />}>
+            <Badge color="red" text="asd" />
+          </Tooltip>
         </Header>
         <ContentWrapper>
           <IngridientsItem text="감자" />
@@ -69,6 +75,7 @@ const Wrapper = styled.div`
 
 const Header = styled.div`
   display: flex;
+  justify-content: space-between;
 `;
 
 const HeaderMainText = styled.span`
@@ -94,4 +101,8 @@ const OutsideWrapper = styled.div`
 const FooterWrapper = styled.div`
   display: flex;
   gap: 10px;
+`;
+
+const TooltipContentImg = styled.img`
+  max-width: 100%;
 `;
