@@ -4,6 +4,7 @@ import CheckIcon from '../../assets/icons/CheckIcon';
 type CheckBoxProps = {
   isActive: boolean;
 };
+
 const CheckBox = ({ isActive }: CheckBoxProps) => {
   const [isChecked, setIsChecked] = useState(isActive);
   const handleCheckbox = () => {
