@@ -1,24 +1,26 @@
 import { styled } from 'styled-components';
-
-const TestWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  text-align: center;
-`;
-
-const TestParagraph = styled.p`
-  font-size: 12px;
-  font-weight: bold;
-  color: hotpink;
-`;
+import Router from './routes/Router';
 
 function App() {
   return (
-    <TestWrapper>
-      <TestParagraph>We are chingi</TestParagraph>
-    </TestWrapper>
+    <Wrapper>
+      <Container>
+        <Router />
+      </Container>
+    </Wrapper>
   );
 }
 
 export default App;
+
+const Wrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  background-color: bisque;
+`;
+
+const Container = styled.div`
+  width: 390px;
+  height: 100vh;
+  background-color: white;
+`;
