@@ -3,9 +3,12 @@ import Player, { YouTubeProps } from 'react-youtube';
 import { useDetailPageAction, useDetailPageState } from '../../pages/Detail';
 import useInterval from '../../hooks/useInterval';
 
+const width = '390';
+const height = (Number(width) / 16) * 9;
+
 const opts: YouTubeProps['opts'] = {
-  height: '390',
-  width: '640',
+  width,
+  height: String(height),
 };
 
 const embed = '2g811Eo7K8U';
