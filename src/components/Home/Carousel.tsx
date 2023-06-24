@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import CarouselContents from './CarouselContents';
+import NextIcon from '../../assets/icons/NextIcon';
 
 type Props = {
   data: {
@@ -21,7 +22,7 @@ const Carousel = ({ data }: Props) => {
         <TextBox>
           <CurationText>{data[activeIndex].text}</CurationText>
           <Link to={`/detail/${data[activeIndex].text}`}>
-            <img src="/public/next.svg" />
+            <NextIcon />
           </Link>
         </TextBox>
         <CarouselContents data={data} setActiveIndex={setActiveIndex} />

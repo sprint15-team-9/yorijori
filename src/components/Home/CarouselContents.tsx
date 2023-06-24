@@ -1,3 +1,4 @@
+import ClockIcon from '../../assets/icons/ClockIcon';
 import SlickSlider from './SlickSlider';
 import { styled } from 'styled-components';
 
@@ -21,9 +22,7 @@ export default function CarouselContents({ data, setActiveIndex }: Props) {
             <p>
               난이도 {item.level}
               <Divider>|</Divider>
-              <span>
-                <img src="/public/clock.svg" />
-              </span>
+              <ClockIcon />
               {item.time}
             </p>
           </CaptionBox>
@@ -65,11 +64,10 @@ const CaptionBox = styled.div`
     align-items: center;
     color: white;
     font-size: 12px;
+  }
 
-    img {
-      display: inline;
-      margin-right: 5px;
-    }
+  svg {
+    margin-right: 5px;
   }
 `;
 
