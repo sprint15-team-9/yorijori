@@ -36,6 +36,28 @@ const Wrapper = styled.div`
   position: relative;
   width: 100%;
   height: 400px;
+
+  .slick-slider .slick-dots li {
+    width: 6px;
+    height: 6px;
+    background: #d9d9d9;
+    margin: 0 5px;
+    border-radius: 50%;
+    cursor: auto;
+    button {
+      display: none;
+    }
+  }
+
+  .slick-slider .slick-dots li.slick-active {
+    background: #ed7732;
+    width: 19px;
+    border-radius: 5px;
+    cursor: auto;
+    button {
+      display: none;
+    }
+  }
 `;
 
 const TextBox = styled.div`

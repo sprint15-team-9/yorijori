@@ -18,12 +18,7 @@ export default function SlickSlider({ children, setActiveIndex }: Props) {
     slidesToScroll: 1,
     afterChange: setActiveIndex,
   };
-  return (
-    <>
-      <GlobalStyle />
-      <Slider {...settings}>{children}</Slider>
-    </>
-  );
+  return <Slider {...settings}>{children}</Slider>;
 }
 
 const GlobalStyle = createGlobalStyle`
