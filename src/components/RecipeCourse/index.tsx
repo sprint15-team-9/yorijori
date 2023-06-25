@@ -3,7 +3,10 @@ import HandIcon from '../../assets/icons/ic_recipe_hand.svg';
 import RightIcon from '../../assets/icons/ic_recipe_tip_next.svg';
 import TimerIcon from '../../assets/icons/ic_recipe_time.svg';
 import { useEffect, useRef, useState } from 'react';
-import { useDetailPageState } from '../../pages/Detail';
+import useModal from '../../hooks/useModal';
+import IngredintsModal from '../modal/IngredintsModal';
+import { useParams } from 'react-router-dom';
+import DescisionButton from '../Button/DescisionButton';
 
 const STEP_MOCK = [
   {
@@ -44,6 +47,9 @@ const HALF_NUMBER = 8;
 const RecipeCourse = () => {
   const observedElementGroup = useRef<HTMLElement[]>([]);
   const [articleDomRect, setArticleDomRect] = useState<DOMRectReadOnly[]>([]);
+  const { isModalOpen, openModal, closeModal } = useModal();
+
+  const { id: receipeId } = useParams<{ id: string }>();
 
   useEffect(() => {
     if (!observedElementGroup.current) return;
@@ -72,58 +78,73 @@ const RecipeCourse = () => {
   }, []);
 
   return (
-    <Wrapper>
-      <Header>
-        <Title>조리 과정</Title>
-        <EmptyButton>재료 보기</EmptyButton>
-      </Header>
-      <Main>
-        <ProgressOuter
-          top={articleDomRect[articleDomRect.length - 1]?.top + HALF_NUMBER}
-        >
-          <ProgressInnter />
-          {Array.from({ length: STEP_MOCK.length }, (_, i) => (
-            <ProgressStep key={i} top={articleDomRect[i]?.top} />
-          ))}
-        </ProgressOuter>
-        <StepWrapper>
-          {STEP_MOCK.map((data, index) => (
-            <Article
-              key={data.step_order}
-              ref={(el) => (observedElementGroup.current[index] = el)}
-            >
-              <StepNumberWrapper>
-                <StepNumber>
-                  <span>{data.step_order}</span>
-                </StepNumber>
-                <StepTime>{data.time_stamp}</StepTime>
-              </StepNumberWrapper>
-              <Content>
-                <Description>{data.step_description}</Description>
-                {data.tip && (
-                  <TipWrapper>
-                    <img src={HandIcon} alt="Recipe Hand Icon" />
-                    <TipContent>{data.tip}</TipContent>
-                  </TipWrapper>
-                )}
-                {data.tip_method && (
-                  <MethodButton>
-                    <span>{data.tip_method}</span>
-                    <img src={RightIcon} alt="Right Chevron Icon" />
-                  </MethodButton>
-                )}
-                {data.timer && (
-                  <TimerButton>
-                    <img src={TimerIcon} alt="Right Chevron Icon" />
-                    <span>타이머 재기</span>
-                  </TimerButton>
-                )}
-              </Content>
-            </Article>
-          ))}
-        </StepWrapper>
-      </Main>
-    </Wrapper>
+    <>
+      <Wrapper>
+        <Header>
+          <Title>조리 과정</Title>
+          <EmptyButton onClick={openModal}>재료 보기</EmptyButton>
+        </Header>
+        <Main>
+          <ProgressOuter
+            top={articleDomRect[articleDomRect.length - 1]?.top + HALF_NUMBER}
+          >
+            <ProgressInnter />
+            {Array.from({ length: STEP_MOCK.length }, (_, i) => (
+              <ProgressStep key={i} top={articleDomRect[i]?.top} />
+            ))}
+          </ProgressOuter>
+          <StepWrapper>
+            {STEP_MOCK.map((data, index) => (
+              <Article
+                key={data.step_order}
+                ref={(el) => (observedElementGroup.current[index] = el)}
+              >
+                <StepNumberWrapper>
+                  <StepNumber>
+                    <span>{data.step_order}</span>
+                  </StepNumber>
+                  <StepTime>{data.time_stamp}</StepTime>
+                </StepNumberWrapper>
+                <Content>
+                  <Description>{data.step_description}</Description>
+                  {data.tip && (
+                    <TipWrapper>
+                      <img src={HandIcon} alt="Recipe Hand Icon" />
+                      <TipContent>{data.tip}</TipContent>
+                    </TipWrapper>
+                  )}
+                  {data.tip_method && (
+                    <MethodButton onClick={openModal}>
+                      <span>{data.tip_method}</span>
+                      <img src={RightIcon} alt="Right Chevron Icon" />
+                    </MethodButton>
+                  )}
+                  {data.timer && (
+                    <TimerButton>
+                      <img src={TimerIcon} alt="Right Chevron Icon" />
+                      <span>타이머 재기</span>
+                    </TimerButton>
+                  )}
+                </Content>
+              </Article>
+            ))}
+          </StepWrapper>
+        </Main>
+      </Wrapper>
+      {isModalOpen && (
+        <IngredintsModal
+          receipeId={Number(receipeId)}
+          onClose={closeModal}
+          footerContents={[
+            <DescisionButton
+              buttontype="confirm"
+              innerText="확인했어요!"
+              onClick={closeModal}
+            />,
+          ]}
+        />
+      )}
+    </>
   );
 };
 

@@ -1,23 +1,23 @@
+import React, { useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import IngridientsItem from './IngredintsItem';
-import DescisionButton from '../Button/DescisionButton';
 import Tooltip from '../Tooltip';
 import Badge from '../Badge';
 import mensuration from '../../assets/img/mensuration.png';
 import { useRecipe } from '../../hooks/react-query/useRecipe';
 import useOutsideClick from '../../hooks/useOutsideClick';
-import { useEffect, useRef, useState } from 'react';
 import { Ingredient } from '../../types/types';
 
 type IngredintsModalProps = {
   receipeId: number;
   onClose: () => void;
-  onConfirm?: () => void;
+  footerContents?: React.ReactNode[];
 };
 const IngredintsModal = ({
   receipeId,
   onClose,
-  onConfirm,
+
+  footerContents,
 }: IngredintsModalProps) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const { handleGetOnlyIngredient } = useRecipe();
@@ -51,18 +51,7 @@ const IngredintsModal = ({
             })}
         </ContentWrapper>
         <FooterWrapper>
-          <DescisionButton
-            buttontype="back"
-            innerText="돌아가기"
-            onClick={handleClose}
-          />
-          {onConfirm && (
-            <DescisionButton
-              buttontype="confirm"
-              innerText="확인했어요!"
-              onClick={onConfirm}
-            />
-          )}
+          {footerContents && footerContents.map((el) => el)}
         </FooterWrapper>
       </Wrapper>
       <OutsideWrapper />
