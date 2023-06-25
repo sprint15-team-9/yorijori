@@ -1,7 +1,3 @@
-type IconProps = {
-  // ** deg
-  rotate?: number;
-};
 const PopUpCaretIcon = () => (
   <svg
     width="20"
@@ -10,13 +6,13 @@ const PopUpCaretIcon = () => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <g clip-path="url(#clip0_1_1660)">
+    <g clipPath="url(#clip0_1_1660)">
       <path
         d="M7.5 15L12.5 10L7.5 5"
         stroke="#B1B8C0"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </g>
     <defs>

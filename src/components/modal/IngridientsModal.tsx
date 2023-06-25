@@ -4,16 +4,19 @@ import DescisionButton from '../Button/DescisionButton';
 import Tooltip from '../Tooltip';
 import Badge from '../Badge';
 import mensuration from '../../assets/img/mensuration.png';
-import { useEffect } from 'react';
+import { useRecipe } from '../../hooks/react-query/useRecipe';
 
 type IngridientsModalProps = {
   receipeId: number;
   onClose: () => void;
 };
 const IngridientsModal = ({ receipeId, onClose }: IngridientsModalProps) => {
-  useEffect(() => {
-    console.log(receipeId);
-  }, [receipeId]);
+  const { useGetOnlyIngredient } = useRecipe();
+
+  const { data: onlyIngredient } = useGetOnlyIngredient(receipeId);
+
+  console.log(onlyIngredient);
+
   return (
     <>
       <Wrapper>
@@ -51,11 +54,11 @@ const IngridientsModal = ({ receipeId, onClose }: IngridientsModalProps) => {
         </ContentWrapper>
         <FooterWrapper>
           <DescisionButton
-            buttonType="back"
+            buttontype="back"
             innerText="돌아가기"
             onClick={onClose}
           />
-          <DescisionButton buttonType="confirm" innerText="확인했어요!" />
+          <DescisionButton buttontype="confirm" innerText="확인했어요!" />
         </FooterWrapper>
       </Wrapper>
       <OutsideWrapper />

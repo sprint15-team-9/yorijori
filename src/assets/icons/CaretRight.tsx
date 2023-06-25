@@ -6,13 +6,13 @@ export const CaretRightIcon = () => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <g clip-path="url(#clip0_1_2487)">
+    <g clipPath="url(#clip0_1_2487)">
       <path
         d="M6 12L10 8L6 4"
         stroke="#ED7732"
-        stroke-width="1.25"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </g>
     <defs>

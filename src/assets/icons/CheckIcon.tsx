@@ -12,13 +12,13 @@ const CheckIcon = ({ isActive }: IconProps) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <g clip-path="url(#clip0_1_2105)">
+    <g clipPath="url(#clip0_1_2105)">
       <path
         d="M4.5 9L8.5 13L15.5 6"
         stroke={isActive ? BUTTON_CONFIRM_BACKGROUND : BUTTON_CLOSE_BACKGROUND}
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </g>
     <defs>

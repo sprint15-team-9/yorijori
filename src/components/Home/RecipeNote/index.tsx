@@ -1,8 +1,7 @@
-import { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { useRecipe } from '../../../hooks/react-query/useRecipe';
 import RecipeItem from './RecipeItem';
-import IngridientsItem from '../../modal/IngridientsItem';
 import IngridientsModal from '../../modal/IngridientsModal';
 
 const categoryList = [
