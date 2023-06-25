@@ -5,34 +5,39 @@ import RecipeItem from './RecipeItem';
 import IngridientsModal from '../../modal/IngredintsModal';
 import { useNavigate } from 'react-router-dom';
 import DescisionButton from '../../Button/DescisionButton';
+import NoResultIcon from '../../../assets/icons/NoResultIcon';
 
 const categoryList = [
   {
     index: 0,
-    title: '한식',
+    title: '전체',
   },
   {
     index: 1,
-    title: '중식',
+    title: '한식',
   },
   {
     index: 2,
-    title: '양식',
+    title: '중식',
   },
   {
     index: 3,
-    title: '패스트푸드',
+    title: '양식',
   },
   {
     index: 4,
-    title: '일식',
+    title: '패스트푸드',
   },
   {
     index: 5,
-    title: '분식',
+    title: '일식',
   },
   {
     index: 6,
+    title: '분식',
+  },
+  {
+    index: 7,
     title: '카페/디저트',
   },
 ];
@@ -50,6 +55,12 @@ const RecipeNote = () => {
   const { data: recipes } = useGetOnlyRecipeList();
   const startClientXPos = useRef(0);
   const endClientXPos = useRef(0);
+  const filteredRecipes = recipes?.filter((recipe) => {
+    return (
+      selectedId === 0 || recipe.category === categoryList[selectedId].title
+    );
+  });
+  const isNoRecipes = !filteredRecipes || filteredRecipes.length === 0;
 
   const handleDragStart = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!categoryWrapper.current) return;
@@ -97,8 +108,14 @@ const RecipeNote = () => {
             </Category>
           ))}
         </CategoryWrapper>
-        <NoteWrapper>
-          {recipes?.map((recipe) => (
+        <NoteWrapper $isNoRecipes={isNoRecipes}>
+          {isNoRecipes && (
+            <NoRecipes>
+              <NoResultIcon />
+              <p>레시피가 없습니다.</p>
+            </NoRecipes>
+          )}
+          {filteredRecipes?.map((recipe) => (
             <RecipeItem
               key={recipe.id}
               recipe={recipe}
@@ -134,8 +151,11 @@ const RecipeNote = () => {
 export default RecipeNote;
 
 const RecipeWrapper = styled.div`
+  display: flex;
   width: 100%;
   margin-bottom: 20px;
+  flex-direction: column;
+  flex: 1 0;
 `;
 
 const Header = styled.h1`
@@ -174,6 +194,28 @@ const Category = styled.button<{ $isSelected: boolean }>`
     `}
 `;
 
-const NoteWrapper = styled.div`
+const NoteWrapper = styled.div<{ $isNoRecipes: boolean }>`
   margin-top: 28px;
+
+  ${({ $isNoRecipes }) =>
+    $isNoRecipes &&
+    css`
+      display: flex;
+      flex: 1 0 0;
+      margin-top: 0;
+      justify-content: center;
+      align-items: center;
+    `}
+`;
+
+const NoRecipes = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  p {
+    margin-top: 16px;
+    color: ${({ theme }) => theme.color.gray_4};
+  }
 `;

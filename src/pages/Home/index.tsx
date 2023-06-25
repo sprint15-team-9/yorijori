@@ -17,8 +17,10 @@ export default function Home() {
 }
 
 const Wrapper = styled.div`
+  display: flex;
   height: calc(100vh - 52px);
   overflow-y: auto;
+  flex-direction: column;
 `;
 
 const DivideLine = styled.div`
