@@ -36,7 +36,6 @@ export default Carousel;
 const Wrapper = styled.div`
   position: relative;
   width: 100%;
-  height: 400px;
 
   .slick-slider .slick-dots li {
     width: 6px;

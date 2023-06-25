@@ -37,7 +37,6 @@ export default function Curation() {
 const Styled = {
   Wrapper: styled.article`
     width: 100%;
-    height: 600px;
     padding: 20px;
   `,
 
