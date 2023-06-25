@@ -1,11 +1,13 @@
 import { styled } from 'styled-components';
 import PrevIcon from '../../assets/icons/PrevIcon';
 import CloseIcon from '../../assets/icons/CloseIcon';
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useRecipe } from '../../hooks/react-query/useRecipe';
 
-export default function SearchForm() {
-  const [inputValue, setInputValue] = useState('');
+export default function SearchForm({ inputValue, setInputValue }: any) {
+  const { useSearch } = useRecipe();
+  const searchQuery = useSearch(inputValue);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
@@ -17,6 +19,7 @@ export default function SearchForm() {
 
   const handleSubmit = (event: React.SyntheticEvent) => {
     event.preventDefault();
+    searchQuery.refetch();
   };
 
   const navigate = useNavigate();
