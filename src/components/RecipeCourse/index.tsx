@@ -1,3 +1,5 @@
+/* eslint no-unused-vars: 1 */
+
 import { useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 import RightIcon from '../../assets/icons/ic_recipe_tip_next.svg';
@@ -34,10 +36,12 @@ const RecipeCourse = ({ recipe }: RecipeCourseProps) => {
   const observedElementGroup = useRef<HTMLElement[]>([]);
   const [articleDomRect, setArticleDomRect] = useState<DOMRect[]>([]);
   const { isModalOpen, openModal, closeModal } = useModal();
+  const [scrollPosition, setScrollPosition] = useState(0);
 
   const { id: receipeId } = useParams<{ id: string }>();
 
   const step = useRef(0);
+  const scrollRef = useRef<HTMLElement | null>(null);
 
   const calculateBarHeight = () => {
     if (step.current === 0)
@@ -119,6 +123,20 @@ const RecipeCourse = ({ recipe }: RecipeCourseProps) => {
     }
   }, [stepGroup, currentTime]);
 
+  useEffect(() => {
+    const handleScrollTo = () => {
+      const barHeight =
+        calculateBarHeight() - 400 < 0 ? 0 : calculateBarHeight() * 0.4;
+
+      if (barHeight && scrollRef.current) {
+        setScrollPosition(barHeight); // Adjusted scroll position
+        scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    };
+
+    handleScrollTo();
+  }, [step.current]);
+
   return (
     <>
       <Wrapper>
@@ -144,7 +162,11 @@ const RecipeCourse = ({ recipe }: RecipeCourseProps) => {
                 <Article
                   key={data.step_id}
                   ref={(el: any) => {
-                    observedElementGroup.current[index] = el as HTMLElement;
+                    // observedElementGroup.current[index] = el as HTMLElement;
+                    observedElementGroup.current[index] = el;
+                    if (step.current === index) {
+                      scrollRef.current = el;
+                    }
                   }}
                 >
                   <StepNumberWrapper>
