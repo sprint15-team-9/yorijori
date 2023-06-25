@@ -9,6 +9,7 @@ export default function Home() {
       <Header />
       <Wrapper>
         <Curation />
+        <DivideLine />
         <RecipeNote />
       </Wrapper>
     </>
@@ -17,4 +18,10 @@ export default function Home() {
 
 const Wrapper = styled.div`
   overflow-y: scroll;
+`;
+
+const DivideLine = styled.div`
+  height: 16px;
+  background: ${({ theme }) => theme.color.gray_1};
+  margin-top: 20px;
 `;

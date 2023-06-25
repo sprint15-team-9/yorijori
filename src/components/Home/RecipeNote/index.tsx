@@ -121,14 +121,14 @@ const RecipeWrapper = styled.div`
 `;
 
 const Header = styled.h1`
-  margin: 20px 20px 0 20px;
+  margin: 24px 20px 0 20px;
   font-size: 16px;
   font-weight: 700;
 `;
 
 const CategoryWrapper = styled.div`
   display: flex;
-  margin: 16px 20px;
+  margin: 16px 20px 0 20px;
   gap: 8px;
   flex-wrap: nowrap;
   overflow-x: auto;
@@ -156,4 +156,6 @@ const Category = styled.button<{ $isSelected: boolean }>`
     `}
 `;
 
-const NoteWrapper = styled.div``;
+const NoteWrapper = styled.div`
+  margin-top: 28px;
+`;
