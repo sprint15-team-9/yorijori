@@ -2,7 +2,7 @@ import { styled } from 'styled-components';
 import { StepCard } from './StepCard';
 import { Step } from './recipe';
 import useModal from '../../hooks/useModal';
-import { Modal } from '../common/Modal';
+import IngridientsModal from '../modal/IngridientsModal';
 
 const STEP_MOCK: Step[] = [
   {
@@ -27,11 +27,12 @@ const STEP_MOCK: Step[] = [
 /**currentTime,duratin, */
 export const RecipeCard = () => {
   const { isModalOpen, openModal, closeModal } = useModal();
+
   return (
     <>
       <DescriptionWrapper>
         <p>조리 과정</p>
-        <button>재료 보기</button>
+        <button onClick={() => openModal()}>재료 보기</button>
       </DescriptionWrapper>
       {STEP_MOCK.map((stepData: Step) => (
         <StepCard
@@ -40,9 +41,8 @@ export const RecipeCard = () => {
           openModal={openModal}
         />
       ))}
-      <Modal isOpen={isModalOpen} onClose={closeModal}>
-        <div>뭔가를 넣어주세요..!</div>
-      </Modal>
+
+      {isModalOpen && <IngridientsModal receipeId={1} onClose={closeModal} />}
     </>
   );
 };
@@ -56,12 +56,12 @@ const DescriptionWrapper = styled.div`
     font-size: 16px;
     font-weight: 600;
     line-height: 19px;
-    color: #4e535f;
+    color: ${({ theme }) => theme.color.gray_5};
   }
   button {
     padding: 6px 13px 6px 13px;
-    border: 1px solid #ed7732;
-    color: #ed7732;
+    border: ${({ theme }) => `1px solid ${theme.color.primary_1}`};
+    color: ${({ theme }) => theme.color.primary_1};
     border-radius: 20px;
     outline: none;
     font-size: 14px;

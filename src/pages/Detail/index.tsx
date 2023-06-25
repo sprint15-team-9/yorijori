@@ -13,6 +13,5 @@ const Detail = () => {
 export default Detail;
 
 const Wrapper = styled.section`
-  padding: 2em;
-  background: fff;
+  padding: 20px;
 `;

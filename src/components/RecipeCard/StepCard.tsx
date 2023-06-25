@@ -66,7 +66,7 @@ const CardContainer = styled.li`
       line-height: 22px;
       padding-bottom: 0.5em;
       font-weight: 500;
-      color: #4e535f;
+      color: ${({ theme }) => theme.color.gray_6};
     }
     .orderbox {
       display: flex;
@@ -77,7 +77,7 @@ const CardContainer = styled.li`
         color: #ed7732;
       }
       div {
-        background-color: #ed7732;
+        background-color: ${({ theme }) => theme.color.primary_1};
         padding: 0 1px 2px 4px;
         width: 14px;
         height: 14px;
@@ -108,9 +108,9 @@ const CardContainer = styled.li`
     transform: translateY(-50%);
     left: -10px;
     width: 10px;
-    height: 80%;
+    height: 87%;
     border-radius: 15px;
-    background: #ed7732;
+    background: ${({ theme }) => theme.color.primary_1};
     &.active {
       background: skyblue;
     }
@@ -132,7 +132,7 @@ const CardContainer = styled.li`
 const Button1 = styled.button`
   display: flex;
   align-items: center;
-  background: #fdebdc;
+  background: ${({ theme }) => theme.color.primary_2};
   border: none;
   color: #ed7732;
   border-radius: 6px;
