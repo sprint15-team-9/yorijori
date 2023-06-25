@@ -32,7 +32,7 @@ const useGetOnlyRecipeList: () => UseQueryResult<
     const { data, error } = await supabase
       .from('recipe_list')
       .select(
-        'id,curation,recipe_name,youtube_video_thumbnail,cooking_time,category,level'
+        'id,curation,recipe_name,ingredient_id,youtube_video_thumbnail,cooking_time,category,level'
       );
     if (error) {
       throw console.log(`OnlyAllRecipeList : ${error.message}`);
