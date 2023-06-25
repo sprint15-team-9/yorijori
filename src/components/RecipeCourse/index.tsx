@@ -7,6 +7,7 @@ import useModal from '../../hooks/useModal';
 import IngredintsModal from '../modal/IngredintsModal';
 import { useParams } from 'react-router-dom';
 import DescisionButton from '../Button/DescisionButton';
+import { useDetailPageState } from '../../pages/Detail';
 
 const STEP_MOCK = [
   {
@@ -16,7 +17,6 @@ const STEP_MOCK = [
       '감자는 껍질을 제거하고 감자전 믹서기에 잘 갈아지도록 듬성듬성 썰어준다.',
     tip: '기왕이면 깍둑썰기로 썰어주세요',
     tip_method: '감자 깍둑썰기',
-    isCompleted: true,
   },
   {
     step_order: 2,
@@ -24,32 +24,50 @@ const STEP_MOCK = [
     step_description:
       '채에 내려진 물은 20분 정도 가라앉혀서 감자전분 앙금을 만들어 준다.',
     timer: 5,
-    isCompleted: false,
   },
   {
     step_order: 3,
     time_stamp: '08:30',
     step_description:
       '채에 내려진 물은 20분 정도 가라앉혀서 감자전분 앙금을 만들어 준다.',
-    isCompleted: false,
   },
   {
     step_order: 4,
     time_stamp: '10:00',
     step_description:
       '채에 내려진 물은 20분 정도 가라앉혀서 감자전분 앙금을 만들어 준다.',
-    isCompleted: false,
   },
 ];
 
 const HALF_NUMBER = 8;
 
 const RecipeCourse = () => {
+  const { currentTime } = useDetailPageState();
+
   const observedElementGroup = useRef<HTMLElement[]>([]);
   const [articleDomRect, setArticleDomRect] = useState<DOMRectReadOnly[]>([]);
-  const { isModalOpen, openModal, closeModal } = useModal();
+  const { isModalOpen, closeModal } = useModal();
 
   const { id: receipeId } = useParams<{ id: string }>();
+
+  const step = useRef(0);
+  const stepTimeGroup = STEP_MOCK.map((data) => {
+    const formatTime = data.time_stamp
+      .split(':')
+      .map((time) => parseInt(time, 10));
+    return formatTime[0] * 60 + formatTime[1];
+  });
+
+  const calculateBarHeight = () => {
+    if (step.current === 0)
+      return articleDomRect[step.current]?.top + HALF_NUMBER;
+    if (step.current === articleDomRect.length)
+      return articleDomRect[step.current - 1]?.top + HALF_NUMBER * 2;
+    return (
+      articleDomRect[step.current - 1]?.top +
+      (articleDomRect[step.current - 1]?.height ?? 0) / 2
+    );
+  };
 
   useEffect(() => {
     if (!observedElementGroup.current) return;
@@ -60,7 +78,11 @@ const RecipeCourse = () => {
         if (entry.isIntersecting) {
           setArticleDomRect((prev) => [
             ...prev,
-            { ...rect, top: rect.top - margin + HALF_NUMBER },
+            {
+              ...rect,
+              top: rect.top - margin + HALF_NUMBER,
+              height: rect.height,
+            },
           ]);
         }
       });
@@ -77,18 +99,38 @@ const RecipeCourse = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (currentTime < stepTimeGroup[0]) {
+      step.current = 0;
+    } else if (currentTime > stepTimeGroup[stepTimeGroup.length - 1]) {
+      step.current = stepTimeGroup.length;
+    } else {
+      for (let i = 0; i < stepTimeGroup[stepTimeGroup.length - 1]; i++) {
+        if (
+          currentTime >= stepTimeGroup[i] &&
+          currentTime < stepTimeGroup[i + 1]
+        ) {
+          step.current = i + 1;
+          break;
+        }
+      }
+    }
+  }, [currentTime]);
+
   return (
     <>
       <Wrapper>
         <Header>
           <Title>조리 과정</Title>
-          <EmptyButton onClick={openModal}>재료 보기</EmptyButton>
+          <EmptyButton>재료 보기</EmptyButton>
         </Header>
         <Main>
           <ProgressOuter
-            top={articleDomRect[articleDomRect.length - 1]?.top + HALF_NUMBER}
+            top={
+              articleDomRect[articleDomRect.length - 1]?.top + HALF_NUMBER * 2
+            }
           >
-            <ProgressInnter />
+            <ProgressInner top={calculateBarHeight()} />
             {Array.from({ length: STEP_MOCK.length }, (_, i) => (
               <ProgressStep key={i} top={articleDomRect[i]?.top} />
             ))}
@@ -97,7 +139,7 @@ const RecipeCourse = () => {
             {STEP_MOCK.map((data, index) => (
               <Article
                 key={data.step_order}
-                ref={(el) => (observedElementGroup.current[index] = el)}
+                ref={(el: any) => (observedElementGroup.current[index] = el)}
               >
                 <StepNumberWrapper>
                   <StepNumber>
@@ -114,7 +156,7 @@ const RecipeCourse = () => {
                     </TipWrapper>
                   )}
                   {data.tip_method && (
-                    <MethodButton onClick={openModal}>
+                    <MethodButton>
                       <span>{data.tip_method}</span>
                       <img src={RightIcon} alt="Right Chevron Icon" />
                     </MethodButton>
@@ -195,19 +237,21 @@ const ProgressOuter = styled.div<Top>`
   margin-right: 0.75rem;
 `;
 
-const ProgressInnter = styled.div`
+type Top = {
+  top: number;
+};
+const ProgressInner = styled.div<Top>`
   position: absolute;
   left: 0;
   top: 0;
   width: 10px;
-  height: 300px;
+  height: ${(props) => `${props.top}px`};
   border-radius: 12px;
   background-color: #ed7732;
+  transition: height 0.3s ease-in-out;
+  will-change: height;
 `;
 
-type Top = {
-  top: number;
-};
 const ProgressStep = styled.div<Top>`
   position: absolute;
   left: 50%;
