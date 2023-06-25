@@ -2,7 +2,8 @@ export interface OnlyRecipeList {
   id: number;
   recipe_name: string | null;
   youtube_video_thumbnail: string | null;
-  cooking_time: number | null;
+  cooking_time: number | null;  
+  ingredient_id: number | null;
   category: string | null;
   curation: string | null;
   level: string | null;
