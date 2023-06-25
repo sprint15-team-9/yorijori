@@ -1,62 +1,35 @@
+import { useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
-import HandIcon from '../../assets/icons/ic_recipe_hand.svg';
 import RightIcon from '../../assets/icons/ic_recipe_tip_next.svg';
 import TimerIcon from '../../assets/icons/ic_recipe_time.svg';
 import { useEffect, useRef, useState } from 'react';
 import useModal from '../../hooks/useModal';
 import IngredintsModal from '../modal/IngredintsModal';
-import { useParams } from 'react-router-dom';
 import DescisionButton from '../Button/DescisionButton';
 import { useDetailPageState } from '../../pages/Detail';
-
-const STEP_MOCK = [
-  {
-    step_order: 1,
-    time_stamp: '05:30',
-    step_description:
-      '감자는 껍질을 제거하고 감자전 믹서기에 잘 갈아지도록 듬성듬성 썰어준다.',
-    tip: '기왕이면 깍둑썰기로 썰어주세요',
-    tip_method: '감자 깍둑썰기',
-  },
-  {
-    step_order: 2,
-    time_stamp: '07:30',
-    step_description:
-      '채에 내려진 물은 20분 정도 가라앉혀서 감자전분 앙금을 만들어 준다.',
-    timer: 5,
-  },
-  {
-    step_order: 3,
-    time_stamp: '08:30',
-    step_description:
-      '채에 내려진 물은 20분 정도 가라앉혀서 감자전분 앙금을 만들어 준다.',
-  },
-  {
-    step_order: 4,
-    time_stamp: '10:00',
-    step_description:
-      '채에 내려진 물은 20분 정도 가라앉혀서 감자전분 앙금을 만들어 준다.',
-  },
-];
+import { useRecipe } from '../../hooks/react-query/useRecipe';
 
 const HALF_NUMBER = 8;
 
 const RecipeCourse = () => {
+  const { useGetAllRecipeList } = useRecipe();
+  const { data: allRecipe, isLoading } = useGetAllRecipeList();
+
+  if (isLoading === undefined) return null;
+
+  const { id } = useParams();
+  const recipe = allRecipe?.find((list) => list.id === Number(id));
+  const stepGroup = recipe?.step.list!;
+
   const { player, currentTime } = useDetailPageState();
 
   const observedElementGroup = useRef<HTMLElement[]>([]);
-  const [articleDomRect, setArticleDomRect] = useState<DOMRectReadOnly[]>([]);
+  const [articleDomRect, setArticleDomRect] = useState<DOMRect[]>([]);
   const { isModalOpen, closeModal } = useModal();
 
   const { id: receipeId } = useParams<{ id: string }>();
 
   const step = useRef(0);
-  const stepTimeGroup = STEP_MOCK.map((data) => {
-    const formatTime = data.time_stamp
-      .split(':')
-      .map((time) => parseInt(time, 10));
-    return formatTime[0] * 60 + formatTime[1];
-  });
 
   const calculateBarHeight = () => {
     if (step.current === 0)
@@ -69,57 +42,53 @@ const RecipeCourse = () => {
     );
   };
 
+  const getTime = (timestamp: number) => {
+    const minutes = Math.floor(timestamp / 60); // 분 계산
+    const remainingSeconds = timestamp % 60; // 초 계산
+    const formattedTime = `${minutes}:${String(remainingSeconds).padStart(
+      2,
+      '0'
+    )}`; // 문자열 형식 조합
+    return formattedTime;
+  };
+
   const handleTimeButton = (index: number) => {
-    player.seekTo(stepTimeGroup[index], true);
+    player.seekTo(stepGroup[index].timestamp, true);
   };
 
   useEffect(() => {
-    if (!observedElementGroup.current) return;
-    const io = new IntersectionObserver((entries) => {
-      const margin = entries[0].boundingClientRect.top;
-      entries.forEach((entry) => {
-        const rect = entry.boundingClientRect;
-        if (entry.isIntersecting) {
-          setArticleDomRect((prev) => [
-            ...prev,
-            {
-              ...rect,
-              top: rect.top - margin + HALF_NUMBER,
-              height: rect.height,
-            },
-          ]);
-        }
-      });
+    const margin = observedElementGroup.current[0]?.getBoundingClientRect().top;
+    observedElementGroup.current?.forEach((entry) => {
+      const rect = entry.getBoundingClientRect();
+      setArticleDomRect((prev) => [
+        ...prev,
+        {
+          ...rect,
+          top: rect.top - margin + HALF_NUMBER,
+          height: rect.height,
+        },
+      ]);
     });
-
-    observedElementGroup.current.forEach((element: HTMLElement) => {
-      if (element) {
-        io.observe(element);
-      }
-    });
-
-    return () => {
-      io.disconnect();
-    };
-  }, []);
+  }, [recipe?.step.list]);
 
   useEffect(() => {
-    if (currentTime < stepTimeGroup[0]) {
+    if (!stepGroup) return;
+    if (currentTime < stepGroup[0].timestamp) {
       step.current = 0;
-    } else if (currentTime > stepTimeGroup[stepTimeGroup.length - 1]) {
-      step.current = stepTimeGroup.length;
+    } else if (currentTime > stepGroup[stepGroup.length - 1].timestamp) {
+      step.current = stepGroup.length;
     } else {
-      for (let i = 0; i < stepTimeGroup[stepTimeGroup.length - 1]; i++) {
+      for (let i = 0; i < stepGroup.length - 1; i++) {
         if (
-          currentTime >= stepTimeGroup[i] &&
-          currentTime < stepTimeGroup[i + 1]
+          currentTime >= stepGroup[i].timestamp &&
+          currentTime < stepGroup[i + 1].timestamp
         ) {
           step.current = i + 1;
           break;
         }
       }
     }
-  }, [currentTime]);
+  }, [stepGroup, currentTime]);
 
   return (
     <>
@@ -135,39 +104,39 @@ const RecipeCourse = () => {
             }
           >
             <ProgressInner top={calculateBarHeight()} />
-            {Array.from({ length: STEP_MOCK.length }, (_, i) => (
+            {Array.from({ length: stepGroup?.length }, (_, i) => (
               <ProgressStep key={i} top={articleDomRect[i]?.top} />
             ))}
           </ProgressOuter>
           <StepWrapper>
-            {STEP_MOCK.map((data, index) => (
+            {recipe?.step.list.map((data, index) => (
               <Article
-                key={data.step_order}
+                key={data.step_id}
                 ref={(el) => (observedElementGroup.current[index] = el)}
               >
                 <StepNumberWrapper>
                   <StepNumber>
-                    <span>{data.step_order}</span>
+                    <span>{index}</span>
                   </StepNumber>
-                  <StepTime onClick={() => handleTimeButton(index)}>
-                    {data.time_stamp}
+                  <StepTime onClick={() => handleTimeButton(index!)}>
+                    {getTime(data.timestamp!)}
                   </StepTime>
                 </StepNumberWrapper>
                 <Content>
-                  <Description>{data.step_description}</Description>
-                  {data.tip && (
-                    <TipWrapper>
-                      <img src={HandIcon} alt="Recipe Hand Icon" />
-                      <TipContent>{data.tip}</TipContent>
-                    </TipWrapper>
-                  )}
-                  {data.tip_method && (
+                  <Description>{data.description}</Description>
+                  {/* {data.tip && (
+                  <TipWrapper>
+                    <img src={HandIcon} alt="Recipe Hand Icon" />
+                    <TipContent>{data.tip}</TipContent>
+                  </TipWrapper>
+                )} */}
+                  {data.title && (
                     <MethodButton>
-                      <span>{data.tip_method}</span>
+                      <span>{data.title}</span>
                       <img src={RightIcon} alt="Right Chevron Icon" />
                     </MethodButton>
                   )}
-                  {data.timer && (
+                  {data.timer.length !== 0 && (
                     <TimerButton>
                       <img src={TimerIcon} alt="Right Chevron Icon" />
                       <span>타이머 재기</span>
@@ -207,6 +176,7 @@ const Header = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 24px;
 `;
 
 const Title = styled.h2`
