@@ -116,18 +116,18 @@ const RecipeCourse = () => {
               </StepNumberWrapper>
               <Content>
                 <Description>{data.description}</Description>
-                {/* {data.tip && (
-                  <TipWrapper>
-                    <img src={HandIcon} alt="Recipe Hand Icon" />
-                    <TipContent>{data.tip}</TipContent>
-                  </TipWrapper>
-                )} */}
-                {data.title && (
-                  <MethodButton>
-                    <span>{data.title}</span>
-                    <img src={RightIcon} alt="Right Chevron Icon" />
-                  </MethodButton>
-                )}
+                {data.tip.map((tip) => (
+                  <>
+                    <TipWrapper>
+                      <img src={HandIcon} alt="Recipe Hand Icon" />
+                      <TipContent>{tip.description}</TipContent>
+                    </TipWrapper>
+                    <MethodButton>
+                      <span>{tip.title}</span>
+                      <img src={RightIcon} alt="Right Chevron Icon" />
+                    </MethodButton>
+                  </>
+                ))}
                 {data.timer.length !== 0 && (
                   <TimerButton>
                     <img src={TimerIcon} alt="Right Chevron Icon" />
