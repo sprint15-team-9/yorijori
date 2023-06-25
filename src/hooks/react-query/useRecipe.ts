@@ -68,15 +68,14 @@ const useGetOnlyIngredient = (recipe_id: number | undefined) => {
 const useSearch = (recipe_name: string | undefined) => {
   const handleSearch= async () => {
     const { data, error } = await supabase
-      .from('recipe_list')
-      .select('*')
+      .from('recipe_list').select('id,curation,recipe_name,ingredient_id,youtube_video_thumbnail,cooking_time,category,level')
       .eq('recipe_name',recipe_name );
     if (error) {
       throw console.log(`GetSearch : ${error.message}`);
     }
     return data;
   };
-  return useQuery<AllRecipeList[]>(
+  return useQuery<OnlyRecipeList[]>(
     ['search_list'],
     handleSearch
   );
