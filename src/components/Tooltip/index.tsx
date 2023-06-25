@@ -34,6 +34,7 @@ const Wrapper = styled.div`
   width: 276px;
   height: 213px;
   box-shadow: 0px 4px 16px 0px rgba(0, 0, 0, 0.18);
+  z-index: 4;
 
   &::after {
     content: '';
@@ -43,7 +44,6 @@ const Wrapper = styled.div`
     border-color: #ffffff transparent;
     display: block;
     width: 0;
-    z-index: 3;
     top: -18.5px;
     left: 230px;
   }
