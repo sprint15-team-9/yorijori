@@ -2,12 +2,11 @@ export interface OnlyRecipeList {
   id: number;
   recipe_name: string | null;
   youtube_video_thumbnail: string | null;
-  cooking_time: number | null;  
+  cooking_time: number | null;
   ingredient_id: number | null;
   category: string | null;
   curation: string | null;
   level: string | null;
-  ingredient_id: number | null;
 }
 export interface AllRecipeList {
   id: number;
@@ -50,6 +49,8 @@ export interface StepContent {
         {
           tip_id: number | null;
           image_url: string | null;
+          title: string | null;
+          description: string | null;
         }
       ]
     | [];

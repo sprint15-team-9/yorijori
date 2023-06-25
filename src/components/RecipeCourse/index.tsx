@@ -1,81 +1,123 @@
+import { useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
-import HandIcon from '../../assets/icons/ic_recipe_hand.svg';
 import RightIcon from '../../assets/icons/ic_recipe_tip_next.svg';
 import TimerIcon from '../../assets/icons/ic_recipe_time.svg';
+import HandIcon from '../../assets/icons/ic_recipe_hand.svg';
 import { useEffect, useRef, useState } from 'react';
 import useModal from '../../hooks/useModal';
 import IngredintsModal from '../modal/IngredintsModal';
-import { useParams } from 'react-router-dom';
 import DescisionButton from '../Button/DescisionButton';
+import { useDetailPageState } from '../../pages/Detail';
 
-const STEP_MOCK = [
-  {
-    step_order: 1,
-    time_stamp: '05:30',
-    step_description:
-      '감자는 껍질을 제거하고 감자전 믹서기에 잘 갈아지도록 듬성듬성 썰어준다.',
-    tip: '기왕이면 깍둑썰기로 썰어주세요',
-    tip_method: '감자 깍둑썰기',
-    isCompleted: true,
-  },
-  {
-    step_order: 2,
-    time_stamp: '07:30',
-    step_description:
-      '채에 내려진 물은 20분 정도 가라앉혀서 감자전분 앙금을 만들어 준다.',
-    timer: 5,
-    isCompleted: false,
-  },
-  {
-    step_order: 3,
-    time_stamp: '08:30',
-    step_description:
-      '채에 내려진 물은 20분 정도 가라앉혀서 감자전분 앙금을 만들어 준다.',
-    isCompleted: false,
-  },
-  {
-    step_order: 4,
-    time_stamp: '10:00',
-    step_description:
-      '채에 내려진 물은 20분 정도 가라앉혀서 감자전분 앙금을 만들어 준다.',
-    isCompleted: false,
-  },
-];
+import { AllRecipeList } from '../../types/types';
+import VisibleTooltip from '../Tooltip/VisibleTooltip';
+import useOutsideClick from '../../hooks/useOutsideClick';
 
 const HALF_NUMBER = 8;
+const isUserOpenedTooltipBefore = localStorage.getItem(
+  'yorizori-step-tooltip-opened'
+);
 
-const RecipeCourse = () => {
+type RecipeCourseProps = {
+  // 타입이름이 리스트지만 리스트가 아님
+  recipe: AllRecipeList;
+};
+const RecipeCourse = ({ recipe }: RecipeCourseProps) => {
+  const [stepTooltipVisible, setStepTooltipVisible] = useState(
+    isUserOpenedTooltipBefore === 'true'
+  );
+  const tooltipRef = useRef<HTMLDivElement>(null);
+  const stepGroup = recipe?.step.list!;
+
+  const { player, currentTime } = useDetailPageState();
+
   const observedElementGroup = useRef<HTMLElement[]>([]);
-  const [articleDomRect, setArticleDomRect] = useState<DOMRectReadOnly[]>([]);
+  const [articleDomRect, setArticleDomRect] = useState<DOMRect[]>([]);
   const { isModalOpen, openModal, closeModal } = useModal();
 
   const { id: receipeId } = useParams<{ id: string }>();
 
+  const step = useRef(0);
+
+  const calculateBarHeight = () => {
+    if (step.current === 0)
+      return articleDomRect[step.current]?.top + HALF_NUMBER;
+    if (step.current === articleDomRect.length)
+      return articleDomRect[step.current - 1]?.top + HALF_NUMBER * 2;
+    return (
+      articleDomRect[step.current - 1]?.top +
+      (articleDomRect[step.current - 1]?.height ?? 0) / 2
+    );
+  };
+
+  const getTime = (timestamp: number) => {
+    const minutes = Math.floor(timestamp / 60); // 분 계산
+    const remainingSeconds = timestamp % 60; // 초 계산
+    const formattedTime = `${minutes}:${String(remainingSeconds).padStart(
+      2,
+      '0'
+    )}`; // 문자열 형식 조합
+    return formattedTime;
+  };
+
+  const handleTimeButton = (index: number) => {
+    const timeStamp = stepGroup[index].timestamp;
+    if (player && timeStamp) {
+      player.seekTo(timeStamp, true);
+    }
+  };
+
+  // 타이머 버튼을 눌러 타이머를 재면 영상 멈춰볼까
+  // 타이머 모달뜨고 설정하고 시작하고 그럴텐데 뒤에서 영상소리 시끄럽겠죠 그쵸!?
+  const handleTimerButton = () => {
+    if (player) {
+      player.pauseVideo();
+      // 타이머 모달 오픈
+    }
+  };
+
+  const handleCloseStepTooltip = () => {
+    setStepTooltipVisible(true);
+    localStorage.setItem('yorizori-step-tooltip-opened', 'true');
+  };
+
+  useOutsideClick([tooltipRef], handleCloseStepTooltip);
+
   useEffect(() => {
-    if (!observedElementGroup.current) return;
-    const io = new IntersectionObserver((entries) => {
-      const margin = entries[0].boundingClientRect.top;
-      entries.forEach((entry) => {
-        const rect = entry.boundingClientRect;
-        if (entry.isIntersecting) {
-          setArticleDomRect((prev) => [
-            ...prev,
-            { ...rect, top: rect.top - margin + HALF_NUMBER },
-          ]);
+    const margin = observedElementGroup.current[0]?.getBoundingClientRect().top;
+    observedElementGroup.current?.forEach((entry) => {
+      const rect = entry.getBoundingClientRect();
+      setArticleDomRect((prev) => [
+        ...prev,
+        {
+          ...rect,
+          top: rect.top - margin + HALF_NUMBER,
+          height: rect.height,
+        },
+      ]);
+    });
+  }, [recipe?.step.list]);
+
+  useEffect(() => {
+    if (!stepGroup) return;
+    if (currentTime < (stepGroup[0].timestamp ?? -1)) {
+      step.current = 0;
+    } else if (
+      currentTime > (stepGroup[stepGroup.length - 1].timestamp ?? -1)
+    ) {
+      step.current = stepGroup.length;
+    } else {
+      for (let i = 0; i < stepGroup.length - 1; i++) {
+        if (
+          currentTime >= (stepGroup[i].timestamp ?? -1) &&
+          currentTime < (stepGroup[i + 1].timestamp ?? -1)
+        ) {
+          step.current = i + 1;
+          break;
         }
-      });
-    });
-
-    observedElementGroup.current.forEach((element: HTMLElement) => {
-      if (element) {
-        io.observe(element);
       }
-    });
-
-    return () => {
-      io.disconnect();
-    };
-  }, []);
+    }
+  }, [stepGroup, currentTime]);
 
   return (
     <>
@@ -86,48 +128,80 @@ const RecipeCourse = () => {
         </Header>
         <Main>
           <ProgressOuter
-            top={articleDomRect[articleDomRect.length - 1]?.top + HALF_NUMBER}
+            top={
+              articleDomRect[articleDomRect.length - 1]?.top + HALF_NUMBER * 2
+            }
           >
-            <ProgressInnter />
-            {Array.from({ length: STEP_MOCK.length }, (_, i) => (
+            <ProgressInner top={calculateBarHeight()} />
+            {Array.from({ length: stepGroup?.length }, (_, i) => (
               <ProgressStep key={i} top={articleDomRect[i]?.top} />
             ))}
           </ProgressOuter>
           <StepWrapper>
-            {STEP_MOCK.map((data, index) => (
-              <Article
-                key={data.step_order}
-                ref={(el) => (observedElementGroup.current[index] = el)}
-              >
-                <StepNumberWrapper>
-                  <StepNumber>
-                    <span>{data.step_order}</span>
-                  </StepNumber>
-                  <StepTime>{data.time_stamp}</StepTime>
-                </StepNumberWrapper>
-                <Content>
-                  <Description>{data.step_description}</Description>
-                  {data.tip && (
-                    <TipWrapper>
-                      <img src={HandIcon} alt="Recipe Hand Icon" />
-                      <TipContent>{data.tip}</TipContent>
-                    </TipWrapper>
-                  )}
-                  {data.tip_method && (
-                    <MethodButton onClick={openModal}>
-                      <span>{data.tip_method}</span>
-                      <img src={RightIcon} alt="Right Chevron Icon" />
-                    </MethodButton>
-                  )}
-                  {data.timer && (
-                    <TimerButton>
-                      <img src={TimerIcon} alt="Right Chevron Icon" />
-                      <span>타이머 재기</span>
-                    </TimerButton>
-                  )}
-                </Content>
-              </Article>
-            ))}
+            {recipe?.step.list.map((data, index) => {
+              const currentIndex = index + 1;
+              return (
+                <Article
+                  key={data.step_id}
+                  ref={(el: any) => {
+                    observedElementGroup.current[index] = el as HTMLElement;
+                  }}
+                >
+                  <StepNumberWrapper>
+                    <StepNumber>
+                      {currentIndex === 1 && !stepTooltipVisible ? (
+                        <>
+                          <span>{currentIndex}</span>
+                          <VisibleTooltip />
+                        </>
+                      ) : (
+                        <span>{currentIndex}</span>
+                      )}
+                    </StepNumber>
+                    <StepTime onClick={() => handleTimeButton(index!)}>
+                      {getTime(data.timestamp!)}
+                    </StepTime>
+                  </StepNumberWrapper>
+                  <Content>
+                    <Description>{data.description}</Description>
+                    {data.tip.map((tip) => {
+                      return (
+                        <>
+                          <TipWrapper>
+                            <img
+                              src={HandIcon as unknown as string}
+                              alt="Recipe Hand Icon"
+                            />
+                            <TipContent>{tip.description}</TipContent>
+                          </TipWrapper>
+                          <MethodButton
+                            onClick={() =>
+                              tip.image_url &&
+                              window.open(tip.image_url, '_blank')
+                            }
+                          >
+                            <span>{tip.title}</span>
+                            <img
+                              src={RightIcon as unknown as string}
+                              alt="Right Chevron Icon"
+                            />
+                          </MethodButton>
+                        </>
+                      );
+                    })}
+                    {data.timer.length !== 0 && (
+                      <TimerButton onClick={handleTimerButton}>
+                        <img
+                          src={TimerIcon as unknown as string}
+                          alt="Right Chevron Icon"
+                        />
+                        <span>타이머 재기</span>
+                      </TimerButton>
+                    )}
+                  </Content>
+                </Article>
+              );
+            })}
           </StepWrapper>
         </Main>
       </Wrapper>
@@ -151,14 +225,18 @@ const RecipeCourse = () => {
 export default RecipeCourse;
 
 const Wrapper = styled.section`
-  margin-top: 24px;
-  padding: 0 20px;
+  padding-top: 24px;
+  padding-left: 20px;
+  padding-right: 20px;
+
+  overflow-y: auto;
 `;
 
 const Header = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 24px;
 `;
 
 const Title = styled.h2`
@@ -195,19 +273,21 @@ const ProgressOuter = styled.div<Top>`
   margin-right: 0.75rem;
 `;
 
-const ProgressInnter = styled.div`
+type Top = {
+  top: number;
+};
+const ProgressInner = styled.div<Top>`
   position: absolute;
   left: 0;
   top: 0;
   width: 10px;
-  height: 300px;
+  height: ${(props) => `${props.top}px`};
   border-radius: 12px;
   background-color: #ed7732;
+  transition: height 0.3s ease-in-out;
+  will-change: height;
 `;
 
-type Top = {
-  top: number;
-};
 const ProgressStep = styled.div<Top>`
   position: absolute;
   left: 50%;
@@ -234,6 +314,7 @@ const StepNumberWrapper = styled.div`
 `;
 
 const StepNumber = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
