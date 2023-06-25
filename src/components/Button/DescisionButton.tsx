@@ -2,18 +2,18 @@ import { styled } from 'styled-components';
 
 type ButtonType = 'confirm' | 'back';
 type DescisionButtonProps = {
-  buttonType: ButtonType;
+  buttontype: ButtonType;
   innerText: string;
   // 핸들러 달아줄때 ? 빼야겠다
   onClick?: () => void;
 };
 const DescisionButton = ({
-  buttonType,
+  buttontype,
   innerText,
   onClick,
 }: DescisionButtonProps) => {
   return (
-    <StyledButton type="button" buttonType={buttonType} onClick={onClick}>
+    <StyledButton type="button" buttontype={buttontype} onClick={onClick}>
       <InnerText>{innerText}</InnerText>
     </StyledButton>
   );
@@ -21,12 +21,12 @@ const DescisionButton = ({
 
 export default DescisionButton;
 
-const StyledButton = styled.button<Pick<DescisionButtonProps, 'buttonType'>>`
+const StyledButton = styled.button<Pick<DescisionButtonProps, 'buttontype'>>`
   display: flex;
   flex: 1;
   justify-content: center;
   background-color: ${(props) =>
-    props.buttonType === 'confirm' ? '#ED7732' : '#95989F'};
+    props.buttontype === 'confirm' ? '#ED7732' : '#95989F'};
 
   outline: none;
   border: none;

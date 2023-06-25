@@ -1,7 +1,8 @@
-import { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { useRecipe } from '../../../hooks/react-query/useRecipe';
 import RecipeItem from './RecipeItem';
+import IngridientsModal from '../../modal/IngridientsModal';
 
 const categoryList = [
   {
@@ -36,6 +37,8 @@ const categoryList = [
 
 const RecipeNote = () => {
   const [selectedId, setSelectedId] = useState(0);
+  const [targetModalOpen, setTargetModalOpen] = useState<number>();
+
   const categoryWrapper = useRef<HTMLDivElement>(null);
   const [isDrag, setIsDrag] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -67,34 +70,46 @@ const RecipeNote = () => {
   };
 
   return (
-    <RecipeWrapper>
-      <Header>요리조리 레시피 노트</Header>
-      <CategoryWrapper
-        onMouseDown={handleDragStart}
-        onMouseMove={isDrag ? handleDragMove : undefined}
-        onMouseUp={handleDragEnd}
-        onMouseLeave={handleDragEnd}
-        ref={categoryWrapper}
-      >
-        {categoryList.map((category) => (
-          <Category
-            key={category.index}
-            $isSelected={selectedId === category.index}
-            onClick={() => {
-              if (startClientXPos.current === endClientXPos.current)
-                setSelectedId(category.index);
-            }}
-          >
-            {category.title}
-          </Category>
-        ))}
-      </CategoryWrapper>
-      <NoteWrapper>
-        {recipes?.map((recipe) => (
-          <RecipeItem key={recipe.id} recipe={recipe} />
-        ))}
-      </NoteWrapper>
-    </RecipeWrapper>
+    <>
+      <RecipeWrapper>
+        <Header>요리조리 레시피 노트</Header>
+        <CategoryWrapper
+          onMouseDown={handleDragStart}
+          onMouseMove={isDrag ? handleDragMove : undefined}
+          onMouseUp={handleDragEnd}
+          onMouseLeave={handleDragEnd}
+          ref={categoryWrapper}
+        >
+          {categoryList.map((category) => (
+            <Category
+              key={category.index}
+              $isSelected={selectedId === category.index}
+              onClick={() => {
+                if (startClientXPos.current === endClientXPos.current)
+                  setSelectedId(category.index);
+              }}
+            >
+              {category.title}
+            </Category>
+          ))}
+        </CategoryWrapper>
+        <NoteWrapper>
+          {recipes?.map((recipe) => (
+            <RecipeItem
+              key={recipe.id}
+              recipe={recipe}
+              onClick={() => setTargetModalOpen(recipe.id)}
+            />
+          ))}
+        </NoteWrapper>
+      </RecipeWrapper>
+      {!!targetModalOpen && (
+        <IngridientsModal
+          receipeId={selectedId}
+          onClose={() => setTargetModalOpen(undefined)}
+        />
+      )}
+    </>
   );
 };
 
@@ -130,6 +145,8 @@ const Category = styled.button<{ $isSelected: boolean }>`
   border-radius: 16px;
   cursor: pointer;
   flex-shrink: 0;
+
+  font-family: 'Pretendard-Regular';
 
   ${({ theme, $isSelected }) =>
     $isSelected &&
