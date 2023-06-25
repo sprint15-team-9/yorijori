@@ -7,6 +7,7 @@ export interface OnlyRecipeList {
   category: string | null;
   curation: string | null;
   level: string | null;
+  ingredient_id: number | null;
 }
 export interface AllRecipeList {
   id: number;
