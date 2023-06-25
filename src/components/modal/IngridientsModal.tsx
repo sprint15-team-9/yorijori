@@ -108,9 +108,11 @@ const ContentWrapper = styled.div`
 `;
 
 const OutsideWrapper = styled.div`
-  position: fixed;
+  position: absolute;
   top: 0px;
-  width: 390px;
+  bottom: 0;
+  left: 0;
+  right: 0;
   height: 100vh;
   background-color: #21252950;
 `;
