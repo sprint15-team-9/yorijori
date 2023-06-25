@@ -1,3 +1,4 @@
+import React from 'react';
 import { styled } from 'styled-components';
 import useIsHover from '../../hooks/useIsHover';
 
@@ -42,7 +43,7 @@ const Wrapper = styled.div`
     border-color: #ffffff transparent;
     display: block;
     width: 0;
-    z-index: 1;
+    z-index: 3;
     top: -18.5px;
     left: 230px;
   }

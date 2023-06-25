@@ -1,7 +1,7 @@
 import { styled } from 'styled-components';
 import PrevIcon from '../../assets/icons/PrevIcon';
 import CloseIcon from '../../assets/icons/CloseIcon';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function SearchForm() {
@@ -52,7 +52,7 @@ const Wrapper = styled.header`
   padding: 12px 20px;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 1;
 `;
 
 const PrevBtn = styled.span`

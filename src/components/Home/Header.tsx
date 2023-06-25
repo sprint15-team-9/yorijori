@@ -24,5 +24,5 @@ const Wrapper = styled.header`
   position: sticky;
   top: 0;
   background: white;
-  z-index: 1000;
+  z-index: 1;
 `;

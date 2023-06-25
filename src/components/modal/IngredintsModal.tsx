@@ -81,7 +81,7 @@ export default IngredintsModal;
 
 const Wrapper = styled.div`
   position: absolute;
-  width: 374px;
+  width: 320px;
   height: 100vh;
   top: 50%;
   left: 50%;
@@ -99,7 +99,7 @@ const Wrapper = styled.div`
   border-radius: 20px;
   box-shadow: 0px 4px 4px 0 #00000025;
 
-  z-index: 1;
+  z-index: 3;
 `;
 
 const Header = styled.div`
@@ -129,6 +129,7 @@ const OutsideWrapper = styled.div`
   right: 0;
   height: 100vh;
   background-color: #21252950;
+  z-index: 2;
 `;
 
 const FooterWrapper = styled.div`
