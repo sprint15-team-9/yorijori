@@ -39,11 +39,11 @@ export default App;
 const Wrapper = styled.div`
   display: flex;
   justify-content: center;
-  background-color: bisque;
+  background-color: ${({ theme }) => theme.color.primary_2};
 `;
 
 const Container = styled.div`
-  width: 390px;
-  height: 100vh;
+  width: 360px;
+  min-height: 100vh;
   background-color: white;
 `;
