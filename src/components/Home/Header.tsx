@@ -1,11 +1,12 @@
 import { styled } from 'styled-components';
 import SearchIcon from '../../assets/icons/SearchIcon';
 import { Link } from 'react-router-dom';
+import HeaderLogoIcon from '../../assets/icons/HeaderLogoIcon';
 
 export default function Header() {
   return (
     <Wrapper>
-      <h1>요리조리</h1>
+      <HeaderLogoIcon />
       <Link to="/search">
         <SearchIcon />
       </Link>
