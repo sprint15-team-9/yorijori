@@ -45,6 +45,7 @@ const categoryList = [
 const RecipeNote = () => {
   const [selectedId, setSelectedId] = useState(0);
   const [targetModalOpen, setTargetModalOpen] = useState<number>();
+  const [targetReceipeId, setTargetReceipeId] = useState<number>();
 
   const navigate = useNavigate();
 
@@ -119,14 +120,16 @@ const RecipeNote = () => {
             <RecipeItem
               key={recipe.id}
               recipe={recipe}
-              onClick={() =>
-                recipe.ingredient_id && setTargetModalOpen(recipe.ingredient_id)
-              }
+              onClick={() => {
+                setTargetReceipeId(recipe.id);
+                recipe.ingredient_id &&
+                  setTargetModalOpen(recipe.ingredient_id);
+              }}
             />
           ))}
         </NoteWrapper>
       </RecipeWrapper>
-      {!!targetModalOpen && (
+      {!!targetModalOpen && targetReceipeId && (
         <IngridientsModal
           receipeId={targetModalOpen}
           onClose={() => setTargetModalOpen(undefined)}
@@ -139,7 +142,7 @@ const RecipeNote = () => {
             <DescisionButton
               buttontype="confirm"
               innerText="확인했어요!"
-              onClick={() => navigate(`/detail/${targetModalOpen}`)}
+              onClick={() => navigate(`/detail/${targetReceipeId}`)}
             />,
           ]}
         />

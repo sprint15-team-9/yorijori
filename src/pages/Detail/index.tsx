@@ -1,6 +1,10 @@
 import React, { createContext, useContext, useState } from 'react';
 import YoutubePlayer from '../../components/YoutubePlayer/YoutubePlayer';
 import RecipeCourse from '../../components/RecipeCourse';
+import { styled } from 'styled-components';
+import { useRecipe } from '../../hooks/react-query/useRecipe';
+import { useParams } from 'react-router-dom';
+import { YouTubePlayer } from 'react-youtube';
 
 export interface DetailPageState {
   player: unknown | null;
@@ -10,7 +14,7 @@ export interface DetailPageState {
 }
 
 export interface DetailPageAction {
-  register: (YT: unknown) => void;
+  register: (YT: YouTubePlayer) => void;
   play: () => void;
   pause: () => void;
   handleCurrentTime: (currentTime: number) => void;
@@ -21,8 +25,19 @@ interface DetailPageProviderProps {
   children: React.ReactNode;
 }
 
-const DetailPageStateContext = createContext<DetailPageState | null>(null);
-const DetailPageActionContext = createContext<DetailPageAction | null>(null);
+const DetailPageStateContext = createContext<DetailPageState>({
+  player: null,
+  isPlaying: false,
+  currentTime: 0,
+  duration: 0,
+});
+const DetailPageActionContext = createContext<DetailPageAction>({
+  register: (YT: YouTubePlayer) => {},
+  play: () => {},
+  pause: () => {},
+  handleCurrentTime: (currentTime: number) => {},
+  handleDuration: (duration: number) => {},
+});
 
 // eslint-disable-next-line react-refresh/only-export-components
 export function useDetailPageState() {
@@ -47,7 +62,6 @@ export function useDetailPageAction() {
 }
 
 function DetailPageProvider({ children }: DetailPageProviderProps) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [player, setPlayer] = useState<any>();
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -60,9 +74,8 @@ function DetailPageProvider({ children }: DetailPageProviderProps) {
     duration,
   };
 
-  const action = {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    register(YT: any) {
+  const action: DetailPageAction = {
+    register(YT: YouTubePlayer) {
       setPlayer(YT);
     },
     play() {
@@ -91,12 +104,32 @@ function DetailPageProvider({ children }: DetailPageProviderProps) {
 }
 
 const Detail = () => {
+  const { id } = useParams<{ id: string }>();
+
+  const { useGetAllRecipeList } = useRecipe();
+  const { data: allRecipe, isLoading } = useGetAllRecipeList();
+
+  const targetRecipe = allRecipe?.find((recipe) => recipe.id === Number(id));
+
   return (
     <DetailPageProvider>
-      <YoutubePlayer />
-      <RecipeCourse />
+      <Wrapper>
+        {!isLoading && targetRecipe && targetRecipe.youtube_video_id && (
+          <>
+            <YoutubePlayer videoId={targetRecipe.youtube_video_id} />
+            <RecipeCourse recipe={targetRecipe} />
+          </>
+        )}
+      </Wrapper>
     </DetailPageProvider>
   );
 };
 
 export default Detail;
+
+const Wrapper = styled.div`
+  display: flex;
+  height: 100vh;
+  overflow-y: auto;
+  flex-direction: column;
+`;

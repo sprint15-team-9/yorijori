@@ -1,4 +1,3 @@
-import React from 'react';
 import Player, { YouTubeProps } from 'react-youtube';
 import { useDetailPageAction, useDetailPageState } from '../../pages/Detail';
 import useInterval from '../../hooks/useInterval';
@@ -11,9 +10,11 @@ const opts: YouTubeProps['opts'] = {
   height: String(height),
 };
 
-const embed = 'BZEjXGZMxrE';
+type YoutubePlayerProps = {
+  videoId: string;
+};
 
-const YoutubePlayer: React.FunctionComponent = () => {
+const YoutubePlayer = ({ videoId }: YoutubePlayerProps) => {
   const { player } = useDetailPageState();
   const { register, handleCurrentTime, handleDuration } = useDetailPageAction();
 
@@ -32,7 +33,7 @@ const YoutubePlayer: React.FunctionComponent = () => {
     handleDuration(YT.getDuration());
   };
 
-  return <Player videoId={embed} opts={opts} onReady={onPlayerReady} />;
+  return <Player videoId={videoId} opts={opts} onReady={onPlayerReady} />;
 };
 
 export default YoutubePlayer;

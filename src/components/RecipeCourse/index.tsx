@@ -8,25 +8,23 @@ import useModal from '../../hooks/useModal';
 import IngredintsModal from '../modal/IngredintsModal';
 import DescisionButton from '../Button/DescisionButton';
 import { useDetailPageState } from '../../pages/Detail';
-import { useRecipe } from '../../hooks/react-query/useRecipe';
+
+import { AllRecipeList } from '../../types/types';
 
 const HALF_NUMBER = 8;
 
-const RecipeCourse = () => {
-  const { useGetAllRecipeList } = useRecipe();
-  const { data: allRecipe, isLoading } = useGetAllRecipeList();
-
-  if (isLoading === undefined) return null;
-
-  const { id } = useParams();
-  const recipe = allRecipe?.find((list) => list.id === Number(id));
+type RecipeCourseProps = {
+  // 타입이름이 리스트지만 리스트가 아님
+  recipe: AllRecipeList;
+};
+const RecipeCourse = ({ recipe }: RecipeCourseProps) => {
   const stepGroup = recipe?.step.list!;
 
   const { player, currentTime } = useDetailPageState();
 
   const observedElementGroup = useRef<HTMLElement[]>([]);
   const [articleDomRect, setArticleDomRect] = useState<DOMRect[]>([]);
-  const { isModalOpen, closeModal } = useModal();
+  const { isModalOpen, openModal, closeModal } = useModal();
 
   const { id: receipeId } = useParams<{ id: string }>();
 
@@ -54,7 +52,16 @@ const RecipeCourse = () => {
   };
 
   const handleTimeButton = (index: number) => {
-    player.seekTo(stepGroup[index].timestamp, true);
+    if (player) {
+      player.seekTo(stepGroup[index].timestamp, true);
+    }
+  };
+
+  // 타이머 버튼을 눌러 타이머를 재면 영상 멈춰볼까
+  // 타이머 모달뜨고 설정하고 시작하고 그럴텐데 뒤에서 영상소리 시끄럽겠죠 그쵸!?
+  const handleTimerButton = () => {
+    player.pauseVideo(true);
+    // 타이머 모달 오픈
   };
 
   useEffect(() => {
@@ -96,7 +103,7 @@ const RecipeCourse = () => {
       <Wrapper>
         <Header>
           <Title>조리 과정</Title>
-          <EmptyButton>재료 보기</EmptyButton>
+          <EmptyButton onClick={openModal}>재료 보기</EmptyButton>
         </Header>
         <Main>
           <ProgressOuter
@@ -131,14 +138,18 @@ const RecipeCourse = () => {
                         <img src={HandIcon} alt="Recipe Hand Icon" />
                         <TipContent>{tip.description}</TipContent>
                       </TipWrapper>
-                      <MethodButton>
+                      <MethodButton
+                        onClick={() =>
+                          tip.image_url && window.open(tip.image_url, '_blank')
+                        }
+                      >
                         <span>{tip.title}</span>
                         <img src={RightIcon} alt="Right Chevron Icon" />
                       </MethodButton>
                     </>
                   ))}
                   {data.timer.length !== 0 && (
-                    <TimerButton>
+                    <TimerButton onClick={handleTimerButton}>
                       <img src={TimerIcon} alt="Right Chevron Icon" />
                       <span>타이머 재기</span>
                     </TimerButton>
@@ -169,8 +180,11 @@ const RecipeCourse = () => {
 export default RecipeCourse;
 
 const Wrapper = styled.section`
-  margin-top: 24px;
-  padding: 0 20px;
+  padding-top: 24px;
+  padding-left: 20px;
+  padding-right: 20px;
+
+  overflow-y: auto;
 `;
 
 const Header = styled.header`
