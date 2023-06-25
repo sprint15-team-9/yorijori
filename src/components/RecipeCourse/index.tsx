@@ -38,7 +38,7 @@ const STEP_MOCK = [
 const HALF_NUMBER = 8;
 
 const RecipeCourse = () => {
-  const { currentTime } = useDetailPageState();
+  const { player, currentTime } = useDetailPageState();
 
   const observedElementGroup = useRef<HTMLElement[]>([]);
   const [articleDomRect, setArticleDomRect] = useState<DOMRectReadOnly[]>([]);
@@ -60,6 +60,10 @@ const RecipeCourse = () => {
       articleDomRect[step.current - 1]?.top +
       (articleDomRect[step.current - 1]?.height ?? 0) / 2
     );
+  };
+
+  const handleTimeButton = (index: number) => {
+    player.seekTo(stepTimeGroup[index], true);
   };
 
   useEffect(() => {
@@ -135,7 +139,9 @@ const RecipeCourse = () => {
                 <StepNumber>
                   <span>{data.step_order}</span>
                 </StepNumber>
-                <StepTime>{data.time_stamp}</StepTime>
+                <StepTime onClick={() => handleTimeButton(index)}>
+                  {data.time_stamp}
+                </StepTime>
               </StepNumberWrapper>
               <Content>
                 <Description>{data.step_description}</Description>
