@@ -1,14 +1,43 @@
 import { styled } from 'styled-components';
-import LogoIcon from '../../assets/icons/LogoIcon';
+import { useState } from 'react';
+import IngridientsModal from '../modal/IngredintsModal';
+import { useNavigate } from 'react-router-dom';
+import DescisionButton from '../Button/DescisionButton';
 
 export default function SearchContents() {
+  const [targetModalOpen, setTargetModalOpen] = useState<number>();
+  const navigate = useNavigate();
+
   return (
-    <Wrapper>
-      <NotContentsBox>
-        <LogoIcon />
-        <h3>원하는 레시피를 검색해 보세요!</h3>
-      </NotContentsBox>
-    </Wrapper>
+    <>
+      <Wrapper>
+        {/* {recipes?.map((recipe) => (
+          <RecipeItem
+            key={recipe.id}
+            recipe={recipe}
+            onClick={() => setTargetModalOpen(recipe.id)}
+          />
+        ))} */}
+      </Wrapper>
+      {!!targetModalOpen && (
+        <IngridientsModal
+          receipeId={targetModalOpen}
+          onClose={() => setTargetModalOpen(undefined)}
+          footerContents={[
+            <DescisionButton
+              buttontype="back"
+              innerText="돌아가기!"
+              onClick={() => setTargetModalOpen(undefined)}
+            />,
+            <DescisionButton
+              buttontype="confirm"
+              innerText="확인했어요!"
+              onClick={() => navigate(`/detail/${targetModalOpen}`)}
+            />,
+          ]}
+        />
+      )}
+    </>
   );
 }
 
@@ -20,14 +49,18 @@ const Wrapper = styled.section`
   align-items: center;
 `;
 
-const NotContentsBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 100px;
-  h3 {
-    margin-top: 20px;
-    font-size: 16px;
-    color: #95989f;
-  }
-`;
+// const NotContentsBox = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   margin-top: 100px;
+//   h3 {
+//     margin-top: 20px;
+//     font-size: 16px;
+//     color: #95989f;
+//   }
+// `;
+
+// const NoteWrapper = styled.div`
+//   margin-top: 28px;
+// `;
