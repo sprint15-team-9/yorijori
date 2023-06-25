@@ -1,10 +1,11 @@
-import { ThemeProvider, styled } from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 import Router from './routes/Router';
 import { useState } from 'react';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import theme from './style/theme';
 import GlobalStyle from './style/GlobalStyle';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+
 function App() {
   const [client] = useState(
     new QueryClient({
@@ -17,6 +18,7 @@ function App() {
       },
     })
   );
+
   return (
     <QueryClientProvider client={client}>
       <ThemeProvider theme={theme}>

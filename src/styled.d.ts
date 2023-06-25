@@ -22,7 +22,6 @@ declare module 'styled-components' {
       gray_4: string;
       gray_5: string;
       gray_6: string;
-      gray_7: string;
     };
   }
 }
