@@ -101,14 +101,16 @@ const RecipeNote = () => {
             <RecipeItem
               key={recipe.id}
               recipe={recipe}
-              onClick={() => setTargetModalOpen(recipe.id)}
+              onClick={() =>
+                recipe.ingredient_id && setTargetModalOpen(recipe.ingredient_id)
+              }
             />
           ))}
         </NoteWrapper>
       </RecipeWrapper>
       {!!targetModalOpen && (
         <IngridientsModal
-          receipeId={selectedId}
+          receipeId={targetModalOpen}
           onClose={() => setTargetModalOpen(undefined)}
           onConfirm={() => navigate(`/detail/${targetModalOpen}`)}
         />

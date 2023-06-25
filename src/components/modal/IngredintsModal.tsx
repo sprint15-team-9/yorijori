@@ -6,7 +6,8 @@ import Badge from '../Badge';
 import mensuration from '../../assets/img/mensuration.png';
 import { useRecipe } from '../../hooks/react-query/useRecipe';
 import useOutsideClick from '../../hooks/useOutsideClick';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { Ingredient } from '../../types/types';
 
 type IngredintsModalProps = {
   receipeId: number;
@@ -19,13 +20,19 @@ const IngredintsModal = ({
   onConfirm,
 }: IngredintsModalProps) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const { useGetOnlyIngredient } = useRecipe();
+  const { handleGetOnlyIngredient } = useRecipe();
 
-  const { data: onlyIngredient } = useGetOnlyIngredient(receipeId);
+  const [onlyIngredient, setOnlyIngredient] = useState<Ingredient[]>([]);
 
-  console.log(onlyIngredient);
+  useEffect(() => {
+    handleGetOnlyIngredient(receipeId).then((res) => setOnlyIngredient(res));
+  }, [receipeId]);
 
-  useOutsideClick([wrapperRef], onClose);
+  const handleClose = () => {
+    onClose();
+  };
+
+  useOutsideClick([wrapperRef], handleClose);
 
   return (
     <>
@@ -37,36 +44,17 @@ const IngredintsModal = ({
           </Tooltip>
         </Header>
         <ContentWrapper>
-          <IngridientsItem text="감자" />
-          <IngridientsItem text="떡볶이용 떡" />
-          <IngridientsItem text="고추장" />
-          <IngridientsItem text="족발" />
-          <IngridientsItem text="배고프다" />
-          <IngridientsItem text="후우" />
-          <IngridientsItem text="감자" />
-          <IngridientsItem text="떡볶이용 떡" />
-          <IngridientsItem text="고추장" />
-          <IngridientsItem text="족발" />
-          <IngridientsItem text="배고프다" />
-          <IngridientsItem text="후우" />
-          <IngridientsItem text="감자" />
-          <IngridientsItem text="떡볶이용 떡" />
-          <IngridientsItem text="고추장" />
-          <IngridientsItem text="족발" />
-          <IngridientsItem text="배고프다" />
-          <IngridientsItem text="후우" />
-          <IngridientsItem text="감자" />
-          <IngridientsItem text="떡볶이용 떡" />
-          <IngridientsItem text="고추장" />
-          <IngridientsItem text="족발" />
-          <IngridientsItem text="배고프다" />
-          <IngridientsItem text="후우" />
+          {onlyIngredient.length !== 0 &&
+            onlyIngredient[0].list.map(({ name, amount }) => {
+              const text = `${name ?? ''} ${amount ?? ''}`;
+              return <IngridientsItem text={text} />;
+            })}
         </ContentWrapper>
         <FooterWrapper>
           <DescisionButton
             buttontype="back"
             innerText="돌아가기"
-            onClick={onClose}
+            onClick={handleClose}
           />
           {onConfirm && (
             <DescisionButton
