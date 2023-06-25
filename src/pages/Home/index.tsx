@@ -17,7 +17,8 @@ export default function Home() {
 }
 
 const Wrapper = styled.div`
-  overflow-y: scroll;
+  height: calc(100vh - 52px);
+  overflow-y: auto;
 `;
 
 const DivideLine = styled.div`
