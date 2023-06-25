@@ -8,25 +8,32 @@ import useModal from '../../hooks/useModal';
 import IngredintsModal from '../modal/IngredintsModal';
 import DescisionButton from '../Button/DescisionButton';
 import { useDetailPageState } from '../../pages/Detail';
-import { useRecipe } from '../../hooks/react-query/useRecipe';
+
+import { AllRecipeList } from '../../types/types';
+import VisibleTooltip from '../Tooltip/VisibleTooltip';
+import useOutsideClick from '../../hooks/useOutsideClick';
 
 const HALF_NUMBER = 8;
+const isUserOpenedTooltipBefore = localStorage.getItem(
+  'yorizori-step-tooltip-opened'
+);
 
-const RecipeCourse = () => {
-  const { useGetAllRecipeList } = useRecipe();
-  const { data: allRecipe, isLoading } = useGetAllRecipeList();
-
-  if (isLoading === undefined) return null;
-
-  const { id } = useParams();
-  const recipe = allRecipe?.find((list) => list.id === Number(id));
+type RecipeCourseProps = {
+  // 타입이름이 리스트지만 리스트가 아님
+  recipe: AllRecipeList;
+};
+const RecipeCourse = ({ recipe }: RecipeCourseProps) => {
+  const [stepTooltipVisible, setStepTooltipVisible] = useState(
+    isUserOpenedTooltipBefore === 'true'
+  );
+  const tooltipRef = useRef<HTMLDivElement>(null);
   const stepGroup = recipe?.step.list!;
 
   const { player, currentTime } = useDetailPageState();
 
   const observedElementGroup = useRef<HTMLElement[]>([]);
   const [articleDomRect, setArticleDomRect] = useState<DOMRect[]>([]);
-  const { isModalOpen, closeModal } = useModal();
+  const { isModalOpen, openModal, closeModal } = useModal();
 
   const { id: receipeId } = useParams<{ id: string }>();
 
@@ -54,8 +61,27 @@ const RecipeCourse = () => {
   };
 
   const handleTimeButton = (index: number) => {
-    player.seekTo(stepGroup[index].timestamp, true);
+    const timeStamp = stepGroup[index].timestamp;
+    if (player && timeStamp) {
+      player.seekTo(timeStamp, true);
+    }
   };
+
+  // 타이머 버튼을 눌러 타이머를 재면 영상 멈춰볼까
+  // 타이머 모달뜨고 설정하고 시작하고 그럴텐데 뒤에서 영상소리 시끄럽겠죠 그쵸!?
+  const handleTimerButton = () => {
+    if (player) {
+      player.pauseVideo();
+      // 타이머 모달 오픈
+    }
+  };
+
+  const handleCloseStepTooltip = () => {
+    setStepTooltipVisible(true);
+    localStorage.setItem('yorizori-step-tooltip-opened', 'true');
+  };
+
+  useOutsideClick([tooltipRef], handleCloseStepTooltip);
 
   useEffect(() => {
     const margin = observedElementGroup.current[0]?.getBoundingClientRect().top;
@@ -74,15 +100,17 @@ const RecipeCourse = () => {
 
   useEffect(() => {
     if (!stepGroup) return;
-    if (currentTime < stepGroup[0].timestamp) {
+    if (currentTime < (stepGroup[0].timestamp ?? -1)) {
       step.current = 0;
-    } else if (currentTime > stepGroup[stepGroup.length - 1].timestamp) {
+    } else if (
+      currentTime > (stepGroup[stepGroup.length - 1].timestamp ?? -1)
+    ) {
       step.current = stepGroup.length;
     } else {
       for (let i = 0; i < stepGroup.length - 1; i++) {
         if (
-          currentTime >= stepGroup[i].timestamp &&
-          currentTime < stepGroup[i + 1].timestamp
+          currentTime >= (stepGroup[i].timestamp ?? -1) &&
+          currentTime < (stepGroup[i + 1].timestamp ?? -1)
         ) {
           step.current = i + 1;
           break;
@@ -96,7 +124,7 @@ const RecipeCourse = () => {
       <Wrapper>
         <Header>
           <Title>조리 과정</Title>
-          <EmptyButton>재료 보기</EmptyButton>
+          <EmptyButton onClick={openModal}>재료 보기</EmptyButton>
         </Header>
         <Main>
           <ProgressOuter
@@ -110,42 +138,70 @@ const RecipeCourse = () => {
             ))}
           </ProgressOuter>
           <StepWrapper>
-            {recipe?.step.list.map((data, index) => (
-              <Article
-                key={data.step_id}
-                ref={(el) => (observedElementGroup.current[index] = el)}
-              >
-                <StepNumberWrapper>
-                  <StepNumber>
-                    <span>{index}</span>
-                  </StepNumber>
-                  <StepTime onClick={() => handleTimeButton(index!)}>
-                    {getTime(data.timestamp!)}
-                  </StepTime>
-                </StepNumberWrapper>
-                <Content>
-                  <Description>{data.description}</Description>
-                  {data.tip.map((tip) => (
-                    <>
-                      <TipWrapper>
-                        <img src={HandIcon} alt="Recipe Hand Icon" />
-                        <TipContent>{tip.description}</TipContent>
-                      </TipWrapper>
-                      <MethodButton>
-                        <span>{tip.title}</span>
-                        <img src={RightIcon} alt="Right Chevron Icon" />
-                      </MethodButton>
-                    </>
-                  ))}
-                  {data.timer.length !== 0 && (
-                    <TimerButton>
-                      <img src={TimerIcon} alt="Right Chevron Icon" />
-                      <span>타이머 재기</span>
-                    </TimerButton>
-                  )}
-                </Content>
-              </Article>
-            ))}
+            {recipe?.step.list.map((data, index) => {
+              const currentIndex = index + 1;
+              return (
+                <Article
+                  key={data.step_id}
+                  ref={(el: any) => {
+                    observedElementGroup.current[index] = el as HTMLElement;
+                  }}
+                >
+                  <StepNumberWrapper>
+                    <StepNumber>
+                      {currentIndex === 1 && !stepTooltipVisible ? (
+                        <>
+                          <span>{currentIndex}</span>
+                          <VisibleTooltip />
+                        </>
+                      ) : (
+                        <span>{currentIndex}</span>
+                      )}
+                    </StepNumber>
+                    <StepTime onClick={() => handleTimeButton(index!)}>
+                      {getTime(data.timestamp!)}
+                    </StepTime>
+                  </StepNumberWrapper>
+                  <Content>
+                    <Description>{data.description}</Description>
+                    {data.tip.map((tip) => {
+                      return (
+                        <>
+                          <TipWrapper>
+                            <img
+                              src={HandIcon as unknown as string}
+                              alt="Recipe Hand Icon"
+                            />
+                            <TipContent>{tip.description}</TipContent>
+                          </TipWrapper>
+                          <MethodButton
+                            onClick={() =>
+                              tip.image_url &&
+                              window.open(tip.image_url, '_blank')
+                            }
+                          >
+                            <span>{tip.title}</span>
+                            <img
+                              src={RightIcon as unknown as string}
+                              alt="Right Chevron Icon"
+                            />
+                          </MethodButton>
+                        </>
+                      );
+                    })}
+                    {data.timer.length !== 0 && (
+                      <TimerButton onClick={handleTimerButton}>
+                        <img
+                          src={TimerIcon as unknown as string}
+                          alt="Right Chevron Icon"
+                        />
+                        <span>타이머 재기</span>
+                      </TimerButton>
+                    )}
+                  </Content>
+                </Article>
+              );
+            })}
           </StepWrapper>
         </Main>
       </Wrapper>
@@ -169,8 +225,11 @@ const RecipeCourse = () => {
 export default RecipeCourse;
 
 const Wrapper = styled.section`
-  margin-top: 24px;
-  padding: 0 20px;
+  padding-top: 24px;
+  padding-left: 20px;
+  padding-right: 20px;
+
+  overflow-y: auto;
 `;
 
 const Header = styled.header`
@@ -255,6 +314,7 @@ const StepNumberWrapper = styled.div`
 `;
 
 const StepNumber = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
