@@ -5,6 +5,7 @@ import type { OnlyRecipeList } from '../../../../types/types';
 
 type RecipeItemProps = {
   recipe: OnlyRecipeList;
+  onClick: () => void;
 };
 
 const getColor = (level: string) => {
@@ -30,9 +31,9 @@ const getColor = (level: string) => {
   };
 };
 
-const RecipeItem = ({ recipe }: RecipeItemProps) => {
+const RecipeItem = ({ recipe, onClick }: RecipeItemProps) => {
   return (
-    <Note key={recipe.id}>
+    <Note key={recipe.id} onClick={onClick}>
       <NoteImg src={recipe.youtube_video_thumbnail ?? undefined} />
       <Content>
         {recipe.level && (
@@ -57,6 +58,7 @@ const Note = styled.div`
   width: 100%;
   padding: 0 20px;
   gap: 16px;
+  cursor: pointer;
 
   & + & {
     margin-top: 24px;
