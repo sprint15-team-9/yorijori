@@ -5,6 +5,8 @@ import Tooltip from '../Tooltip';
 import Badge from '../Badge';
 import mensuration from '../../assets/img/mensuration.png';
 import { useRecipe } from '../../hooks/react-query/useRecipe';
+import useOutsideClick from '../../hooks/useOutsideClick';
+import { useRef } from 'react';
 
 type IngredintsModalProps = {
   receipeId: number;
@@ -16,15 +18,18 @@ const IngredintsModal = ({
   onClose,
   onConfirm,
 }: IngredintsModalProps) => {
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const { useGetOnlyIngredient } = useRecipe();
 
   const { data: onlyIngredient } = useGetOnlyIngredient(receipeId);
 
   console.log(onlyIngredient);
 
+  useOutsideClick([wrapperRef], onClose);
+
   return (
     <>
-      <Wrapper>
+      <Wrapper ref={wrapperRef}>
         <Header>
           <HeaderMainText>요리 재료 체크하기!</HeaderMainText>
           <Tooltip tooltipComponent={<TooltipContentImg src={mensuration} />}>
