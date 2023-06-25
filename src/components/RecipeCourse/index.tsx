@@ -2,6 +2,8 @@ import { styled } from 'styled-components';
 import HandIcon from '../../assets/icons/ic_recipe_hand.svg';
 import RightIcon from '../../assets/icons/ic_recipe_tip_next.svg';
 import TimerIcon from '../../assets/icons/ic_recipe_time.svg';
+import { useEffect, useRef, useState } from 'react';
+import { useDetailPageState } from '../../pages/Detail';
 
 const STEP_MOCK = [
   {
@@ -37,7 +39,38 @@ const STEP_MOCK = [
   },
 ];
 
+const HALF_NUMBER = 8;
+
 const RecipeCourse = () => {
+  const observedElementGroup = useRef<HTMLElement[]>([]);
+  const [articleDomRect, setArticleDomRect] = useState<DOMRectReadOnly[]>([]);
+
+  useEffect(() => {
+    if (!observedElementGroup.current) return;
+    const io = new IntersectionObserver((entries) => {
+      const margin = entries[0].boundingClientRect.top;
+      entries.forEach((entry) => {
+        const rect = entry.boundingClientRect;
+        if (entry.isIntersecting) {
+          setArticleDomRect((prev) => [
+            ...prev,
+            { ...rect, top: rect.top - margin + HALF_NUMBER },
+          ]);
+        }
+      });
+    });
+
+    observedElementGroup.current.forEach((element: HTMLElement) => {
+      if (element) {
+        io.observe(element);
+      }
+    });
+
+    return () => {
+      io.disconnect();
+    };
+  }, []);
+
   return (
     <Wrapper>
       <Header>
@@ -45,15 +78,20 @@ const RecipeCourse = () => {
         <EmptyButton>재료 보기</EmptyButton>
       </Header>
       <Main>
-        <ProgressOuter>
+        <ProgressOuter
+          top={articleDomRect[articleDomRect.length - 1]?.top + HALF_NUMBER}
+        >
           <ProgressInnter />
           {Array.from({ length: STEP_MOCK.length }, (_, i) => (
-            <ProgressStep key={i} />
+            <ProgressStep key={i} top={articleDomRect[i]?.top} />
           ))}
         </ProgressOuter>
         <StepWrapper>
-          {STEP_MOCK.map((data) => (
-            <Article key={data.step_order}>
+          {STEP_MOCK.map((data, index) => (
+            <Article
+              key={data.step_order}
+              ref={(el) => (observedElementGroup.current[index] = el)}
+            >
               <StepNumberWrapper>
                 <StepNumber>
                   <span>{data.step_order}</span>
@@ -127,10 +165,10 @@ const Main = styled.main`
   display: flex;
 `;
 
-const ProgressOuter = styled.div`
+const ProgressOuter = styled.div<Top>`
   position: relative;
   width: 10px;
-  height: 500px;
+  height: ${(props) => `${props.top}px`};
   border-radius: 12px;
   background-color: #f2f4f6;
   margin-right: 0.75rem;
@@ -146,9 +184,13 @@ const ProgressInnter = styled.div`
   background-color: #ed7732;
 `;
 
-const ProgressStep = styled.div`
+type Top = {
+  top: number;
+};
+const ProgressStep = styled.div<Top>`
   position: absolute;
   left: 50%;
+  top: ${(props) => `${props.top}px`};
   transform: translateX(-50%);
   width: 6px;
   height: 6px;
