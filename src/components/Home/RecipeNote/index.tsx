@@ -4,6 +4,7 @@ import { useRecipe } from '../../../hooks/react-query/useRecipe';
 import RecipeItem from './RecipeItem';
 import IngridientsModal from '../../modal/IngredintsModal';
 import { useNavigate } from 'react-router-dom';
+import DescisionButton from '../../Button/DescisionButton';
 
 const categoryList = [
   {
@@ -112,7 +113,18 @@ const RecipeNote = () => {
         <IngridientsModal
           receipeId={targetModalOpen}
           onClose={() => setTargetModalOpen(undefined)}
-          onConfirm={() => navigate(`/detail/${targetModalOpen}`)}
+          footerContents={[
+            <DescisionButton
+              buttontype="back"
+              innerText="돌아가기!"
+              onClick={() => setTargetModalOpen(undefined)}
+            />,
+            <DescisionButton
+              buttontype="confirm"
+              innerText="확인했어요!"
+              onClick={() => navigate(`/detail/${targetModalOpen}`)}
+            />,
+          ]}
         />
       )}
     </>
