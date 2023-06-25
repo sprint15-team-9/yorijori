@@ -63,10 +63,29 @@ const useGetOnlyIngredient = (recipe_id: number | undefined) => {
   );
 };
 
+
+// 레시피 이름으로 검색
+const useSearch = (recipe_name: string | undefined) => {
+  const handleSearch= async () => {
+    const { data, error } = await supabase
+      .from('recipe_list')
+      .select('*')
+      .eq('recipe_name',recipe_name );
+    if (error) {
+      throw console.log(`GetSearch : ${error.message}`);
+    }
+    return data;
+  };
+  return useQuery<AllRecipeList[]>(
+    ['search_list'],
+    handleSearch
+  );
+};
 export const useRecipe = () => {
   return {
     useGetAllRecipeList,
     useGetOnlyRecipeList,
     useGetOnlyIngredient,
+useSearch
   };
 };
