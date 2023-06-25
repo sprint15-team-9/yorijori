@@ -1,7 +1,7 @@
 import { styled } from 'styled-components';
-import { Step } from './recipe';
 import { CaretRightIcon } from '../../assets/icons/CaretRight';
 import { TimerIcon } from '../../assets/icons/TimerIcon';
+import { Step } from '../RecipeCard/recipe';
 
 type StepProps = {
   stepData: Step;

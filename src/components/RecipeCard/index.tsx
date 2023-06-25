@@ -2,7 +2,7 @@ import { styled } from 'styled-components';
 import { StepCard } from './StepCard';
 import { Step } from './recipe';
 import useModal from '../../hooks/useModal';
-import IngridientsModal from '../modal/IngridientsModal';
+import IngridientsModal from '../modal/IngredintsModal';
 
 const STEP_MOCK: Step[] = [
   {

@@ -2,11 +2,11 @@ import { styled } from 'styled-components';
 import CheckBox from '../CheckBox';
 import PopUpCaretIcon from '../../assets/icons/PopUpCaretIcon';
 
-type IngridientsItemProps = {
+type IngredintsItemProps = {
   text: string;
   isActive?: boolean;
 };
-const IngridientsItem = ({ text, isActive }: IngridientsItemProps) => {
+const IngredintsItem = ({ text, isActive }: IngredintsItemProps) => {
   return (
     <Wrapper>
       <CheckBox isActive={!!isActive} />
@@ -16,7 +16,7 @@ const IngridientsItem = ({ text, isActive }: IngridientsItemProps) => {
   );
 };
 
-export default IngridientsItem;
+export default IngredintsItem;
 
 const Wrapper = styled.div`
   display: flex;

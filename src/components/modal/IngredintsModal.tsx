@@ -1,16 +1,21 @@
 import { styled } from 'styled-components';
-import IngridientsItem from './IngridientsItem';
+import IngridientsItem from './IngredintsItem';
 import DescisionButton from '../Button/DescisionButton';
 import Tooltip from '../Tooltip';
 import Badge from '../Badge';
 import mensuration from '../../assets/img/mensuration.png';
 import { useRecipe } from '../../hooks/react-query/useRecipe';
 
-type IngridientsModalProps = {
+type IngredintsModalProps = {
   receipeId: number;
   onClose: () => void;
+  onConfirm?: () => void;
 };
-const IngridientsModal = ({ receipeId, onClose }: IngridientsModalProps) => {
+const IngredintsModal = ({
+  receipeId,
+  onClose,
+  onConfirm,
+}: IngredintsModalProps) => {
   const { useGetOnlyIngredient } = useRecipe();
 
   const { data: onlyIngredient } = useGetOnlyIngredient(receipeId);
@@ -58,7 +63,13 @@ const IngridientsModal = ({ receipeId, onClose }: IngridientsModalProps) => {
             innerText="돌아가기"
             onClick={onClose}
           />
-          <DescisionButton buttontype="confirm" innerText="확인했어요!" />
+          {onConfirm && (
+            <DescisionButton
+              buttontype="confirm"
+              innerText="확인했어요!"
+              onClick={onConfirm}
+            />
+          )}
         </FooterWrapper>
       </Wrapper>
       <OutsideWrapper />
@@ -66,7 +77,7 @@ const IngridientsModal = ({ receipeId, onClose }: IngridientsModalProps) => {
   );
 };
 
-export default IngridientsModal;
+export default IngredintsModal;
 
 const Wrapper = styled.div`
   position: absolute;

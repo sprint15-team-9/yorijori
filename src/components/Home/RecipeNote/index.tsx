@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { useRecipe } from '../../../hooks/react-query/useRecipe';
 import RecipeItem from './RecipeItem';
-import IngridientsModal from '../../modal/IngridientsModal';
+import IngridientsModal from '../../modal/IngredintsModal';
 
 const categoryList = [
   {

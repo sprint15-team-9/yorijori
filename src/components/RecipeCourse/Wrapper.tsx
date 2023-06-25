@@ -1,8 +1,8 @@
 import { styled } from 'styled-components';
 import { StepCard } from './StepCard';
-import { Step } from './recipe';
 import useModal from '../../hooks/useModal';
-import { Modal } from '../common/Modal';
+import { Step } from '../RecipeCard/recipe';
+import IngredintsModal from '../modal/IngredintsModal';
 
 const STEP_MOCK: Step[] = [
   {
@@ -27,6 +27,7 @@ const STEP_MOCK: Step[] = [
 /**currentTime,duratin, */
 export const RecipeCard = () => {
   const { isModalOpen, openModal, closeModal } = useModal();
+
   return (
     <>
       <DescriptionWrapper>
@@ -40,9 +41,9 @@ export const RecipeCard = () => {
           openModal={openModal}
         />
       ))}
-      <Modal isOpen={isModalOpen} onClose={closeModal}>
-        <div>뭔가를 넣어주세요..!</div>
-      </Modal>
+      {isModalOpen && (
+        <IngredintsModal receipeId={1} onClose={() => closeModal()} />
+      )}
     </>
   );
 };
