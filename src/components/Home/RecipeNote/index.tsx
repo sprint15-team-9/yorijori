@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components';
 import { useRecipe } from '../../../hooks/react-query/useRecipe';
 import RecipeItem from './RecipeItem';
 import IngridientsModal from '../../modal/IngredintsModal';
+import { useNavigate } from 'react-router-dom';
 
 const categoryList = [
   {
@@ -38,6 +39,8 @@ const categoryList = [
 const RecipeNote = () => {
   const [selectedId, setSelectedId] = useState(0);
   const [targetModalOpen, setTargetModalOpen] = useState<number>();
+
+  const navigate = useNavigate();
 
   const categoryWrapper = useRef<HTMLDivElement>(null);
   const [isDrag, setIsDrag] = useState(false);
@@ -107,6 +110,7 @@ const RecipeNote = () => {
         <IngridientsModal
           receipeId={selectedId}
           onClose={() => setTargetModalOpen(undefined)}
+          onConfirm={() => navigate(`/detail/${targetModalOpen}`)}
         />
       )}
     </>
