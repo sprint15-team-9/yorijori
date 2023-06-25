@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from 'react';
 import YoutubePlayer from '../../components/YoutubePlayer/YoutubePlayer';
+import RecipeCourse from '../../components/RecipeCourse';
 
 export interface DetailPageState {
   player: unknown | null;
@@ -92,9 +93,8 @@ function DetailPageProvider({ children }: DetailPageProviderProps) {
 const Detail = () => {
   return (
     <DetailPageProvider>
-      <div>
-        <YoutubePlayer />
-      </div>
+      <YoutubePlayer />
+      <RecipeCourse />
     </DetailPageProvider>
   );
 };

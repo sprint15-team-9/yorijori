@@ -11,7 +11,7 @@ const opts: YouTubeProps['opts'] = {
   height: String(height),
 };
 
-const embed = '2g811Eo7K8U';
+const embed = 'BZEjXGZMxrE';
 
 const YoutubePlayer: React.FunctionComponent = () => {
   const { player } = useDetailPageState();
