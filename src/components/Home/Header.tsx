@@ -1,15 +1,13 @@
 import { styled } from 'styled-components';
-import SearchIcon from '../../assets/icons/SearchIcon';
-import { Link } from 'react-router-dom';
 import HeaderLogoIcon from '../../assets/icons/HeaderLogoIcon';
 
 export default function Header() {
   return (
     <Wrapper>
       <HeaderLogoIcon />
-      <Link to="/search">
+      {/* <Link to="/search">
         <SearchIcon />
-      </Link>
+      </Link> */}
     </Wrapper>
   );
 }
