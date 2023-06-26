@@ -151,7 +151,7 @@ const RecipeCourse = ({ recipe }: RecipeCourseProps) => {
                     <StepNumber>
                       {currentIndex === 1 && !stepTooltipVisible ? (
                         <>
-                          <span>xptkxm</span>
+                          <span>{currentIndex}</span>
                           <VisibleTooltip />
                         </>
                       ) : (
@@ -339,7 +339,6 @@ const StepTime = styled.span`
   line-height: 19px;
   letter-spacing: 0em;
   color: #ed7732;
-  cursor: pointer;
 `;
 
 const Content = styled.div`

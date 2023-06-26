@@ -115,7 +115,6 @@ const Detail = () => {
 
   return (
     <DetailPageProvider>
-      <Header />
       <Wrapper>
         {!isLoading && targetRecipe && targetRecipe.youtube_video_id && (
           <>
