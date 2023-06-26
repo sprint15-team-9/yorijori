@@ -4,6 +4,6 @@ export default function useIsHover() {
   const [isHover, setIsHover] = useState(false);
   const onMouseLeave = () => setIsHover(false);
   const onMouseEnter = () => setIsHover(true);
-
-  return { isHover, onMouseEnter, onMouseLeave };
+  const toggleMouse = () => setIsHover((prev) => !prev);
+  return { isHover, onMouseEnter, onMouseLeave, toggleMouse };
 }

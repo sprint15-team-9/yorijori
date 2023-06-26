@@ -8,9 +8,9 @@ type TooltipProps = {
 };
 
 export default function Tooltip({ tooltipComponent, children }: TooltipProps) {
-  const { isHover, onMouseEnter, onMouseLeave } = useIsHover();
+  const { isHover, onMouseLeave, toggleMouse } = useIsHover();
   return (
-    <TooltipWrapper onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+    <TooltipWrapper onClick={toggleMouse} onMouseLeave={onMouseLeave}>
       {children}
       {isHover && <Wrapper>{tooltipComponent}</Wrapper>}
     </TooltipWrapper>
@@ -19,6 +19,7 @@ export default function Tooltip({ tooltipComponent, children }: TooltipProps) {
 
 const TooltipWrapper = styled.div`
   position: relative;
+  cursor: pointer;
 `;
 const Wrapper = styled.div`
   position: absolute;

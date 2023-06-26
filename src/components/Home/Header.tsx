@@ -6,7 +6,9 @@ import HeaderLogoIcon from '../../assets/icons/HeaderLogoIcon';
 export default function Header() {
   return (
     <Wrapper>
-      <HeaderLogoIcon />
+      <Link to="/">
+        <HeaderLogoIcon />
+      </Link>
       <Link to="/search">
         <SearchIcon />
       </Link>

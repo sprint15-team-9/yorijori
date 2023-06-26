@@ -1,7 +1,7 @@
 export interface OnlyRecipeList {
   id: number;
   recipe_name: string | null;
-  youtube_video_thumbnail: string | null;
+  youtube_video_thumbnail: string | undefined;
   cooking_time: number | null;
   ingredient_id: number | null;
   category: string | null;

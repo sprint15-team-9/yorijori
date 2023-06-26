@@ -22,6 +22,7 @@ const Wrapper = styled.div`
   display: flex;
   gap: 16px;
   align-items: center;
+  margin: 10px;
 `;
 
 const IngridientText = styled.p`

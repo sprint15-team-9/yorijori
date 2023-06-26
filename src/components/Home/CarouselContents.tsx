@@ -1,29 +1,27 @@
+import { Dispatch, SetStateAction } from 'react';
 import ClockIcon from '../../assets/icons/ClockIcon';
+import { OnlyRecipeList } from '../../types/types';
 import SlickSlider from './SlickSlider';
 import { styled } from 'styled-components';
+import { formatTime } from '../../utils/formatTime';
 
 type Props = {
-  data: {
-    text: string;
-    image: string;
-    level: string;
-    time: string;
-  }[];
-  setActiveIndex: (index: number) => void;
+  data: OnlyRecipeList[];
+  setActiveIndex: Dispatch<SetStateAction<number>>;
 };
 
 export default function CarouselContents({ data, setActiveIndex }: Props) {
   return (
     <SlickSlider setActiveIndex={setActiveIndex}>
-      {data.map((item, index) => (
-        <ImageContainer key={index}>
-          <Image src={item.image} />
+      {data.map((item) => (
+        <ImageContainer key={item.id}>
+          <Image src={item.youtube_video_thumbnail} />
           <CaptionBox>
             <p>
               난이도 {item.level}
               <Divider>|</Divider>
               <ClockIcon />
-              {item.time}
+              {formatTime(item.cooking_time)}
             </p>
           </CaptionBox>
         </ImageContainer>
@@ -33,7 +31,7 @@ export default function CarouselContents({ data, setActiveIndex }: Props) {
 }
 
 const ImageContainer = styled.div`
-  height: 160px;
+  height: 190px;
   position: relative;
 `;
 
