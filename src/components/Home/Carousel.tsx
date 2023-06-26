@@ -3,29 +3,26 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import CarouselContents from './CarouselContents';
 import NextIcon from '../../assets/icons/NextIcon';
-
+import { OnlyRecipeList } from '../../types/types';
 type Props = {
-  data: {
-    text: string;
-    image: string;
-    level: string;
-    time: string;
-  }[];
+  onlyRecipes: OnlyRecipeList[];
 };
-
-const Carousel = ({ data }: Props) => {
-  const [activeIndex, setActiveIndex] = useState(0);
-
+const Carousel = ({ onlyRecipes }: Props) => {
+  const [activeIndex, setActiveIndex] = useState<number>(0);
   return (
     <>
       <Wrapper>
-        <TextBox>
-          <CurationText>{data[activeIndex].text}</CurationText>
-          <Link to={`/detail/${data[activeIndex].text}`}>
+        <h2 className="curation">{onlyRecipes[activeIndex].curation}</h2>
+        <Link to={`/detail/${onlyRecipes[activeIndex].id}`}>
+          <TextBox>
+            <CurationText>{onlyRecipes[activeIndex].recipe_name}</CurationText>
             <NextIcon />
-          </Link>
-        </TextBox>
-        <CarouselContents data={data} setActiveIndex={setActiveIndex} />
+          </TextBox>
+          <CarouselContents
+            data={onlyRecipes}
+            setActiveIndex={setActiveIndex}
+          />
+        </Link>
       </Wrapper>
     </>
   );
@@ -34,9 +31,13 @@ const Carousel = ({ data }: Props) => {
 export default Carousel;
 
 const Wrapper = styled.div`
+  padding: 15px;
   position: relative;
   width: 100%;
-
+  .curation {
+    color: #4e535f;
+    margin-bottom: 10px;
+  }
   .slick-slider .slick-dots li {
     width: 6px;
     height: 6px;

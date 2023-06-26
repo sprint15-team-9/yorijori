@@ -118,10 +118,25 @@ const GlobalStyle = createGlobalStyle`
   body {
     line-height: 1;
     font-family: 'Pretendard-Regular', 'Prentedard', "Helvetica", "Arial", sans-serif !important;
+    outline: none; 
+    &:-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.4);
+  }
+  &:-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+  }
     }
   ol,
   ul {
     list-style: none;
+  }
+  a{
+    text-decoration: none;
+    color : #1A1E27;
   }
   blockquote,
   q {

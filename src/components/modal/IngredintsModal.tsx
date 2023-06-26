@@ -82,6 +82,14 @@ const Wrapper = styled.div`
   box-shadow: 0px 4px 4px 0 #00000025;
 
   z-index: 3;
+  ::-webkit-scrollbar {
+    width: 0px;
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: rgb(21 20 26 / 100%);
+    border-radius: 10px;
+  }
 `;
 
 const Header = styled.div`

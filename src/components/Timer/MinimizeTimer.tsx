@@ -41,7 +41,7 @@ const MinimizeTimer: React.FC<MinimizeTimerProps> = ({
 };
 
 const TooltipBox = styled.div`
-  position: fixed;
+  position: absolute;
   bottom: 20px;
   right: 20px;
   width: 5rem;
