@@ -1,4 +1,6 @@
+import React from 'react';
 import 'styled-components';
+import { SimpleInterpolation } from 'styled-components';
 
 declare module 'styled-components' {
   export interface ThemedStyledComponentsModule<T> {
