@@ -207,7 +207,7 @@ const RecipeCourse = ({ recipe }: RecipeCourseProps) => {
       </Wrapper>
       {isModalOpen && (
         <IngredintsModal
-          receipeId={Number(receipeId)}
+          receipeId={Number(recipe.ingredient_id)}
           onClose={closeModal}
           footerContents={[
             <DescisionButton

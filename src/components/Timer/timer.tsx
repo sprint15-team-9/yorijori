@@ -2,16 +2,17 @@ import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import useModal from '../../hooks/useModal';
 import { CircularProgressbarStyles } from 'react-circular-progressbar/dist/types';
 import MinimizeTimer from './MinimizeTimer';
 
-const TimerModal = () => {
+type TimerModalProps = {
+  onClose: () => void;
+};
+const TimerModal = ({ onClose }: TimerModalProps) => {
   const [timeRemaining, setTimeRemaining] = useState(1200); // 5 minutes in seconds
   const [isPaused, setIsPaused] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
   const [addedTime, setAddedTime] = useState(0);
-  const { closeModal } = useModal();
   const [isMinimized, setIsMinimized] = useState(false);
 
   useEffect(() => {
@@ -33,7 +34,7 @@ const TimerModal = () => {
   };
 
   const handleModalClose = () => {
-    closeModal();
+    onClose();
   };
 
   const handleReset = () => {
@@ -60,7 +61,7 @@ const TimerModal = () => {
   };
 
   return (
-    <ModalOverlay>
+    <>
       {isMinimized ? (
         <MinimizeTimer
           timeRemaining={timeRemaining + addedTime}
@@ -211,7 +212,7 @@ const TimerModal = () => {
           </SettingButton>
         </ModalWrapper>
       )}
-    </ModalOverlay>
+    </>
   );
 };
 
@@ -237,18 +238,6 @@ const customStyles: CircularProgressbarStyles = {
   },
 };
 
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
 const ModalWrapper = styled.div`
   width: 277px;
   height: 330px;
@@ -261,6 +250,12 @@ const ModalWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  position: absolute;
+  width: 320px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;
 
 const Header = styled.div`
