@@ -11,7 +11,7 @@ const IngredintsItem = ({ text, isActive }: IngredintsItemProps) => {
     <Wrapper>
       <CheckBox isActive={!!isActive} />
       <IngridientText>{text}</IngridientText>
-      <AlternativeIcon>{'>'}</AlternativeIcon>
+      {/* <AlternativeIcon>{'>'}</AlternativeIcon> */}
     </Wrapper>
   );
 };
