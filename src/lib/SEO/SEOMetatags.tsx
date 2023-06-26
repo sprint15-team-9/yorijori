@@ -1,5 +1,4 @@
 import { Helmet } from 'react-helmet';
-import ogImage from '../../assets/img/ogImage.png';
 
 const MetaTag = () => {
   return (
@@ -19,7 +18,7 @@ const MetaTag = () => {
       />
       <meta
         property="og:image"
-        content="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2Fb57a9a05-3626-4e0f-8d94-77b423935f0f%2FopenGraph_image.png?id=a4fbd365-38ff-4fa6-8db3-b2014e0c5074&table=block&spaceId=718f5d07-6f0d-4fbc-97cc-2105e2330c5f&width=2000&userId=7c7aa3ff-8965-4bc4-a53b-0752665f013d&cache=v2"
+        content="https://sprint-9.s3.ap-northeast-2.amazonaws.com/assets/ogImage.png"
       />
       <meta property="og:image:type" content="image/png" />
     </Helmet>
