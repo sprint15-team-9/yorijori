@@ -158,21 +158,9 @@ const TimerModal = () => {
                   fill="none"
                 >
                   <circle cx="26" cy="26" r="26" fill="#B1B8C0" />
-                  <rect
-                    width="3"
-                    height="18"
-                    x="20"
-                    y="17"
+                  <path
                     fill="#fff"
-                    rx="1.5"
-                  />
-                  <rect
-                    width="3"
-                    height="18"
-                    x="29"
-                    y="17"
-                    fill="#fff"
-                    rx="1.5"
+                    d="M21 34.1V18.9c0-1.629 1.844-2.574 3.167-1.623l10.573 7.599a2 2 0 0 1 0 3.248l-10.573 7.6c-1.323.95-3.167.005-3.167-1.624Z"
                   />
                 </svg>
               ) : (
