@@ -6,6 +6,7 @@ import { styled } from 'styled-components';
 import { useRecipe } from '../../hooks/react-query/useRecipe';
 import { useParams } from 'react-router-dom';
 import { YouTubePlayer } from 'react-youtube';
+import Header from '../../components/Detail/Header';
 
 export interface DetailPageState {
   player: YouTubePlayer | null;
@@ -114,14 +115,17 @@ const Detail = () => {
 
   return (
     <DetailPageProvider>
-      <Wrapper>
-        {!isLoading && targetRecipe && targetRecipe.youtube_video_id && (
-          <>
-            <YoutubePlayer videoId={targetRecipe.youtube_video_id} />
-            <RecipeCourse recipe={targetRecipe} />
-          </>
-        )}
-      </Wrapper>
+      {!isLoading && targetRecipe && targetRecipe.youtube_video_id && (
+        <>
+          <Header title={targetRecipe?.recipe_name ?? ''} />
+          <Wrapper>
+            <>
+              <YoutubePlayer videoId={targetRecipe.youtube_video_id} />
+              <RecipeCourse recipe={targetRecipe} />
+            </>
+          </Wrapper>
+        </>
+      )}
     </DetailPageProvider>
   );
 };

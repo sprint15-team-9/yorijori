@@ -2,16 +2,17 @@ import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import useModal from '../../hooks/useModal';
 import { CircularProgressbarStyles } from 'react-circular-progressbar/dist/types';
 import MinimizeTimer from './MinimizeTimer';
 
-const TimerModal = () => {
+type TimerModalProps = {
+  onClose: () => void;
+};
+const TimerModal = ({ onClose }: TimerModalProps) => {
   const [timeRemaining, setTimeRemaining] = useState(1200); // 5 minutes in seconds
   const [isPaused, setIsPaused] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
   const [addedTime, setAddedTime] = useState(0);
-  const { closeModal } = useModal();
   const [isMinimized, setIsMinimized] = useState(false);
 
   useEffect(() => {
@@ -33,7 +34,7 @@ const TimerModal = () => {
   };
 
   const handleModalClose = () => {
-    closeModal();
+    onClose();
   };
 
   const handleReset = () => {
@@ -60,7 +61,7 @@ const TimerModal = () => {
   };
 
   return (
-    <ModalOverlay>
+    <>
       {isMinimized ? (
         <MinimizeTimer
           timeRemaining={timeRemaining + addedTime}
@@ -158,21 +159,9 @@ const TimerModal = () => {
                   fill="none"
                 >
                   <circle cx="26" cy="26" r="26" fill="#B1B8C0" />
-                  <rect
-                    width="3"
-                    height="18"
-                    x="20"
-                    y="17"
+                  <path
                     fill="#fff"
-                    rx="1.5"
-                  />
-                  <rect
-                    width="3"
-                    height="18"
-                    x="29"
-                    y="17"
-                    fill="#fff"
-                    rx="1.5"
+                    d="M21 34.1V18.9c0-1.629 1.844-2.574 3.167-1.623l10.573 7.599a2 2 0 0 1 0 3.248l-10.573 7.6c-1.323.95-3.167.005-3.167-1.624Z"
                   />
                 </svg>
               ) : (
@@ -223,7 +212,7 @@ const TimerModal = () => {
           </SettingButton>
         </ModalWrapper>
       )}
-    </ModalOverlay>
+    </>
   );
 };
 
@@ -249,18 +238,6 @@ const customStyles: CircularProgressbarStyles = {
   },
 };
 
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
 const ModalWrapper = styled.div`
   width: 277px;
   height: 330px;
@@ -273,6 +250,12 @@ const ModalWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  position: absolute;
+  width: 320px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;
 
 const Header = styled.div`

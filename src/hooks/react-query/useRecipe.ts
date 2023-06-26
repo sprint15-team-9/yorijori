@@ -80,7 +80,10 @@ const useSearch = (recipe_name: string | undefined) => {
     }
     return data;
   };
-  return useQuery<OnlyRecipeList[]>(['search_list'], handleSearch);
+  return useQuery<OnlyRecipeList[]>(
+    queryKeys.current_search_list,
+    handleSearch
+  );
 };
 
 const handleGetOnlyIngredient = async (recipe_id: number) => {
