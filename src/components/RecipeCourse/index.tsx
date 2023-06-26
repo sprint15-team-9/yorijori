@@ -12,6 +12,7 @@ import { useDetailPageState } from '../../pages/Detail';
 import { AllRecipeList } from '../../types/types';
 import VisibleTooltip from '../Tooltip/VisibleTooltip';
 import useOutsideClick from '../../hooks/useOutsideClick';
+import TimerModal from '../Timer/timer';
 
 const HALF_NUMBER = 8;
 const isUserOpenedTooltipBefore = localStorage.getItem(
@@ -34,6 +35,8 @@ const RecipeCourse = ({ recipe }: RecipeCourseProps) => {
   const observedElementGroup = useRef<HTMLElement[]>([]);
   const [articleDomRect, setArticleDomRect] = useState<DOMRect[]>([]);
   const { isModalOpen, openModal, closeModal } = useModal();
+
+  const { id: receipeId } = useParams<{ id: string }>();
 
   const step = useRef(0);
 
@@ -67,10 +70,12 @@ const RecipeCourse = ({ recipe }: RecipeCourseProps) => {
 
   // 타이머 버튼을 눌러 타이머를 재면 영상 멈춰볼까
   // 타이머 모달뜨고 설정하고 시작하고 그럴텐데 뒤에서 영상소리 시끄럽겠죠 그쵸!?
+  const [isTimerModalOpen, setTimerModalOpen] = useState(false);
   const handleTimerButton = () => {
     if (player) {
       player.pauseVideo();
       // 타이머 모달 오픈
+      setTimerModalOpen(true);
     }
   };
 
@@ -215,6 +220,9 @@ const RecipeCourse = ({ recipe }: RecipeCourseProps) => {
             />,
           ]}
         />
+      )}
+      {isTimerModalOpen && (
+        <TimerModal onClose={() => setTimerModalOpen(false)} />
       )}
     </>
   );
