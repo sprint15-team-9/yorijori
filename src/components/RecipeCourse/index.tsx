@@ -35,8 +35,6 @@ const RecipeCourse = ({ recipe }: RecipeCourseProps) => {
   const [articleDomRect, setArticleDomRect] = useState<DOMRect[]>([]);
   const { isModalOpen, openModal, closeModal } = useModal();
 
-  const { id: receipeId } = useParams<{ id: string }>();
-
   const step = useRef(0);
 
   const calculateBarHeight = () => {
